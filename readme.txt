@@ -11,7 +11,7 @@ flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sid
 == Description ==
 **flexIDX Home Search** plugin provides an easy solution to embed home search form into your sidebars, and page/post content. Generate custom search links and iframes withing WYSIWYG editor and embed them into your community related pages with a click of a mouse.
 
-**Requires [(flexMLS/flexIDX](http://www.flexmls.com/ "Flex MLS Official Website") Account.**
+**Requires [flexMLS/flexIDX](http://www.flexmls.com/ "Flex MLS Official Website") Account.**
 
 **Implementation Examples**
 
