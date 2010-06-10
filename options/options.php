@@ -232,18 +232,30 @@ function flexIDXHS_plugin_donate(){
 	return $content;
 }
 
+function flexIDXHS_postbox($id, $title, $content) {
+    $content ='
+        <div id="' . $id .'" class="postbox">
+                <div class="handlediv" title="Click to toggle"><br /></div>
+                <h3 class="hndle"><span>' . $title . '</span></h3>
+                <div class="inside">'
+                        . $content .
+                '</div>
+        </div>';
+    return $content;
+}
+
 function flexIDXHS_settings_right_column(){
 	$content = '<div class="postbox-container" style="width:20%;">
-		<div class="metabox-holder">
-			<div class="meta-box-sortables">'
-				. postbox('flexIDXHS_like_plugin', 'Like this plugin?', flexIDXHS_like_plugin())
-				. postbox('flexIDXHS_plugin_support', 'Plugin Support', flexIDXHS_plugin_support())
-				. postbox('flexIDXHS_plugin_credits', 'Credits', flexIDXHS_plugin_credits())
-				. postbox('flexIDXHS_plugin_donate', 'Donate', flexIDXHS_plugin_donate())
-			. '</div>
-			<br/><br/><br/>
-		</div>
-	</div>';
+                        <div class="metabox-holder">
+                                <div class="meta-box-sortables">'
+                                        . flexIDXHS_postbox('flexIDXHS_like_plugin', 'Like this plugin?', flexIDXHS_like_plugin())
+                                        . flexIDXHS_postbox('flexIDXHS_plugin_support', 'Plugin Support', flexIDXHS_plugin_support())
+                                        . flexIDXHS_postbox('flexIDXHS_plugin_credits', 'Credits', flexIDXHS_plugin_credits())
+                                        . flexIDXHS_postbox('flexIDXHS_plugin_donate', 'Donate', flexIDXHS_plugin_donate())
+                                . '</div>
+                                <br/><br/><br/>
+                        </div>
+                </div>';
 	return $content;
 }
 ?>
