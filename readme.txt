@@ -38,6 +38,7 @@ You don't reall need to use shortcodes, but in case you want to get creative, yo
 
 == Installation ==
 **Install like any other basic plugin:**
+
 1.  Unzip and copy the into your /wp-content/plugins/ directory.
 2.  Activate the flexIDX Home Search on your plugins page.
 3.  Go to the flexIDX Options page and enter the IDX url that you generate from your flexMLS account.
