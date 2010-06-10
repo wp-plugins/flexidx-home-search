@@ -1,0 +1,73 @@
+.flexIDXHS_QuickSearch input, .flexIDXHS_QuickSearch select {
+    margin: 0 0 0.5em 0;
+}
+
+.flexIDXHS_QuickSearch label {
+    display: block;
+    float: left;
+}
+.flexIDXHS_QuickSearch label span {
+    display: block;
+    clear: right;
+    text-align: left;
+}
+.flexIDXHS_QuickSearch #label_city,
+.flexIDXHS_QuickSearch #label_propertytype,
+.flexIDXHS_QuickSearch #label_pricerange {
+    width: 100%;
+}
+.flexIDXHS_QuickSearch #label_minprice,
+.flexIDXHS_QuickSearch #label_maxprice,
+.flexIDXHS_QuickSearch #label_bedrooms,
+.flexIDXHS_QuickSearch #label_bathrooms {
+    width: 45%;
+}
+.flexIDXHS_QuickSearch #city,
+.flexIDXHS_QuickSearch #property_type,
+.flexIDXHS_QuickSearch #price_range {
+    width: 100%;
+}
+.flexIDXHS_QuickSearch #min_price,
+.flexIDXHS_QuickSearch #max_price,
+.flexIDXHS_QuickSearch #bedrooms,
+.flexIDXHS_QuickSearch #bathrooms,
+.flexIDXHS_QuickSearch #label_minprice,
+.flexIDXHS_QuickSearch #label_maxprice,
+.flexIDXHS_QuickSearch #label_bedrooms,
+.flexIDXHS_QuickSearch #label_bathrooms {
+    width: 45%;
+}
+.flexIDXHS_QuickSearch #label_minprice #min_price,
+.flexIDXHS_QuickSearch #label_maxprice #max_price,
+.flexIDXHS_QuickSearch #label_bedrooms #bedrooms,
+.flexIDXHS_QuickSearch #label_bathrooms #bathrooms {
+    width: 100%;
+}
+.flexIDXHS_QuickSearch #min_price,
+.flexIDXHS_QuickSearch #bedrooms,
+.flexIDXHS_QuickSearch #label_minprice,
+.flexIDXHS_QuickSearch #label_bathrooms {
+    float: left;
+}
+.flexIDXHS_QuickSearch #max_price,
+.flexIDXHS_QuickSearch #bathrooms,
+.flexIDXHS_QuickSearch #label_maxprice,
+.flexIDXHS_QuickSearch #label_bathrooms {
+    float: right;
+}
+.flexIDXHS_QuickSearch #SearchNow,
+.flexIDXHS_QuickSearch #AdvancedSearch {
+    font-size: 100%;
+}
+.flexIDXHS_QuickSearch #SearchNow {
+    float: left;
+}
+.flexIDXHS_QuickSearch #AdvancedSearch {
+    float: right;
+}
+div.advanced-search-off {
+    text-align: center;
+}
+div.advanced-search-off #SearchNow {
+    float: none;
+}
