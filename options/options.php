@@ -105,7 +105,7 @@ function flexIDXHS_config_page(){
                                             <h3 class="hndle"><span>Price Fields</span></h3>
                                             <div class="inside">
                                                 <p><input type="radio" name="flexidxhs[price-fields]" value="min-max" <?php if($opt['price-fields'] == 'min-max'){ echo 'checked';}?>/> Separate fields for minimum and maximum prices. <br />
-                                                    <input type="radio" name="flexidxhs[price-fields]" value="price-range" <?php if($opt['price-fields'] == 'price-range'){ echo 'checked';}?>/> Pre-set price ranges in a sigle selection list.
+                                                    <input type="radio" name="flexidxhs[price-fields]" value="price-range" <?php if($opt['price-fields'] == 'price-range'){ echo 'checked';}?>/> Pre-set price ranges in a single selection list.
                                                 </p>
                                             </div>
                                     </div>
@@ -225,7 +225,7 @@ function flexIDXHS_plugin_credits(){
 function flexIDXHS_plugin_donate(){
 	$content = '
 	<p>
-		If you would like to make a financial contribution, as a jester of your appreciation for this free plugin, please consider a donation to the <a href="https://www.cancer.org/aspx/Donation/DON_1_Donate_Online_Now.aspx" title="Donate to American Cancer Society">American Cancer Society</a>
+		If you would like to make a financial contribution, as a gesture of your appreciation for this free plugin, please consider a donation to the <a href="https://www.cancer.org/aspx/Donation/DON_1_Donate_Online_Now.aspx" title="Donate to American Cancer Society">American Cancer Society</a>
 	</p>
 	<div style="text-align:center"><a href="https://www.cancer.org/aspx/Donation/DON_1_Donate_Online_Now.aspx" title="Donate to American Cancer Society"><img src="'.FLEXIDXHS_URL.'/images/ACS-logo.jpg" alt="American Cancer Society Logo" title="Donate to American Cancer Society" /></a></div>
 	';
