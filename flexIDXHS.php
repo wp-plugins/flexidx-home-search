@@ -4,13 +4,13 @@ Plugin Name: flexIDX Home Search
 Plugin URI: http://www.phoenixhomes.com/tech/flexidx-home-search
 Description: flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sidebars as well as ability to generate custom search links and iframes that can be embedded into post and page content.
 Author: Max Chirkov
-Version: 0.3
+Version: 0.3.1
 Author URI: http://www.PhoenixHomes.com
 */
 
-define("PLUGIN_BASENAME", plugin_basename(dirname(__FILE__)));
-define("FLEXIDXHS_DIR", WP_PLUGIN_DIR . '/' . PLUGIN_BASENAME);
-define("FLEXIDXHS_URL", WP_PLUGIN_URL . '/' . PLUGIN_BASENAME);
+define("FLEXIDXHS_BASENAME", plugin_basename(dirname(__FILE__)));
+define("FLEXIDXHS_DIR", WP_PLUGIN_DIR . '/' . FLEXIDXHS_BASENAME);
+define("FLEXIDXHS_URL", WP_PLUGIN_URL . '/' . FLEXIDXHS_BASENAME);
 
 include 'options/options.php';
 $flexidxhs_opt = get_option('flexidxhs');
