@@ -20,15 +20,23 @@ $opt['label-names']['price-range']              = 'Select Price Range';
 $opt['label-names']['bedrooms']                 = 'Beds?';
 $opt['label-names']['bathrooms']                = 'Baths?';
 $opt['price-fields']                            = 'min-max';
+$opt['set-min-price']                           = 0;
 $opt['search-buttons']['search-label']          = 'Search Now';
 $opt['search-buttons']['advanced-search-label'] = 'Advanced Search';
 $opt['search-buttons']['display-advanced-search']= true;
-$opt['city-list'] = array('Apache Junction', 'Avondale', 'Carefree', 'Cave Creek', 'Chandler', 'El Mirage', 'Fountain Hills', 'Gilbert', 'Glendale', 'Goodyear', 'Laveen', 'Litchfield Park', 'Mesa', 'Paradise Valley', 'Peoria', 'Phoenix', 'Queen Creek', 'Rio Verde', 'Scottsdale', 'Sun City', 'Sun City West', 'Surprise', 'Tempe', 'Tolleson');
+$opt['city-list']                               = array('Apache Junction', 'Avondale', 'Carefree', 'Cave Creek', 'Chandler', 'El Mirage', 'Fountain Hills', 'Gilbert', 'Glendale', 'Goodyear', 'Laveen', 'Litchfield Park', 'Mesa', 'Paradise Valley', 'Peoria', 'Phoenix', 'Queen Creek', 'Rio Verde', 'Scottsdale', 'Sun City', 'Sun City West', 'Surprise', 'Tempe', 'Tolleson');
+$opt['custom-searches']                         = null;
+$opt['widget-markup']['before-title']           = null;
+$opt['widget-markup']['after-title']            = null;
+$opt['widget-markup']['before-widget']          = null;
+$opt['widget-markup']['after-widget']           = null;
+
 add_option("flexidxhs",$opt);
 
 function flexIDXHS_config_page(){    
 
     $opt = get_option('flexidxhs');
+    
 ?>
     <div class="wrap">
         <form  action="options.php" method="post" id="flexIDXHS-conf">
@@ -69,31 +77,31 @@ function flexIDXHS_config_page(){
                                             <div class="inside">
                                                 <table class="form-table">
                                                     <tr>
-                                                        <th valign="top" scrope="row">City:</th>
+                                                        <th valign="top" scope="row">City:</th>
                                                         <td><input type="text" name="flexidxhs[label-names][city]" value="<?php echo $opt['label-names']['city']?>" size="40"/></td>
                                                     </tr>
                                                     <tr>
-                                                        <th valign="top" scrope="row">Property Type:</th>
+                                                        <th valign="top" scope="row">Property Type:</th>
                                                         <td><input type="text" name="flexidxhs[label-names][property-type]" value="<?php echo $opt['label-names']['property-type']?>" size="40"/></td>
                                                     </tr>
                                                     <tr>
-                                                        <th valign="top" scrope="row">Min. Price:</th>
+                                                        <th valign="top" scope="row">Min. Price:</th>
                                                         <td><input type="text" name="flexidxhs[label-names][min-price]" value="<?php echo $opt['label-names']['min-price']?>" size="40"/></td>
                                                     </tr>
                                                     <tr>
-                                                        <th valign="top" scrope="row">Max. Price:</th>
+                                                        <th valign="top" scope="row">Max. Price:</th>
                                                         <td><input type="text" name="flexidxhs[label-names][max-price]" value="<?php echo $opt['label-names']['max-price']?>" size="40"/></td>
                                                     </tr>
                                                     <tr>
-                                                        <th valign="top" scrope="row">Price Range:</th>
+                                                        <th valign="top" scope="row">Price Range:</th>
                                                         <td><input type="text" name="flexidxhs[label-names][price-range]" value="<?php echo $opt['label-names']['price-range']?>" size="40"/></td>
                                                     </tr>
                                                     <tr>
-                                                        <th valign="top" scrope="row">Bedrooms:</th>
+                                                        <th valign="top" scope="row">Bedrooms:</th>
                                                         <td><input type="text" name="flexidxhs[label-names][bedrooms]" value="<?php echo $opt['label-names']['bedrooms']?>" size="40"/></td>
                                                     </tr>
                                                     <tr>
-                                                        <th valign="top" scrope="row">Bathrooms:</th>
+                                                        <th valign="top" scope="row">Bathrooms:</th>
                                                         <td><input type="text" name="flexidxhs[label-names][bathrooms]" value="<?php echo $opt['label-names']['bathrooms']?>" size="40"/></td>
                                                     </tr>
                                                 </table>                                                
@@ -107,6 +115,23 @@ function flexIDXHS_config_page(){
                                                 <p><input type="radio" name="flexidxhs[price-fields]" value="min-max" <?php if($opt['price-fields'] == 'min-max'){ echo 'checked';}?>/> Separate fields for minimum and maximum prices. <br />
                                                     <input type="radio" name="flexidxhs[price-fields]" value="price-range" <?php if($opt['price-fields'] == 'price-range'){ echo 'checked';}?>/> Pre-set price ranges in a single selection list.
                                                 </p>
+                                                <p>
+                                                    Set Minimum Price to <select name="flexidxhs[set-min-price]">
+                                                        <?php
+                                                        $prices = flexIDXHS_price_min();
+                                                        foreach($prices as $price => $label){
+                                                            if($opt['set-min-price'] == $price){ $selected = ' selected="selected"';}else{ $selected = ''; }
+                                                            echo '<option value="' . $price . '"' . $selected . '>' . $label . '</option>' . "\n";
+                                                            //offer min prices up to $500K so values match to both - separate prices and price ranges.
+                                                            if($price == 500000)
+                                                                break;
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </p>
+                                                <p>
+                                                    <em>Note: If you have active widgets with custom searches, you will need to update them to match the price field type you select here. For example, if you used price range field in a custom widget, and now decided to switch to separate price fields - you need to do the same for the custom search widgets.</em>
+                                                </p>
                                             </div>
                                     </div>
 
@@ -116,15 +141,15 @@ function flexIDXHS_config_page(){
                                             <div class="inside">
                                                 <table class="form-table">
                                                     <tr>
-                                                        <th valign="top" scrope="row">Search Label:</th>
+                                                        <th valign="top" scope="row">Search Label:</th>
                                                         <td><input type="text" name="flexidxhs[search-buttons][search-label]" value="<?php echo $opt['search-buttons']['search-label']?>" size="40"/></td>
                                                     </tr>
                                                     <tr>
-                                                        <th valign="top" scrope="row">Advanced Search Label:</th>
+                                                        <th valign="top" scope="row">Advanced Search Label:</th>
                                                         <td><input type="text" name="flexidxhs[search-buttons][advanced-search-label]" value="<?php echo $opt['search-buttons']['advanced-search-label']?>" size="40"/></td>
                                                     </tr>
                                                     <tr>
-                                                        <th valign="top" scrope="row">Display Advanced Search Button:</th>
+                                                        <th valign="top" scope="row">Display Advanced Search Button:</th>
                                                         <td><input type="checkbox" name="flexidxhs[search-buttons][display-advanced-search]" <?php checked($opt['search-buttons']['display-advanced-search'], true, true);?> /></td>
                                                     </tr>
                                                 </table>
@@ -145,20 +170,75 @@ function flexIDXHS_config_page(){
                                         <textarea style="width: 100%;" cols="20" rows="10" name="flexidxhs[city-list]"><?php echo _array_to_text($opt['city-list']);?></textarea>
                                     </div>
                                </div>
+
+                               <div class="postbox">
+                                    <div class="handlediv" title="Click to toggle"><br /></div>
+                                    <h3 class="hndle"><span>Custom Searches</span></h3>
+                                    <div class="inside">
+                                        <p>The custom searches can be used as additional options in the Quick Search widget. They will be presented as selection list field types. You can have multiple fields and each field can have multiple searches.</p>
+                                        <p><strong>Syntax:</strong></p>
+                                        <code>
+                                            #Field Name Label 1<br />
+                                            Name of the search 1 - Search URL<br />
+                                            Name of the search 2 - Search URL
+                                        </code>
+                                        <p>Result example of the code above:<br/>
+                                            <label>Field Name Label 1:</label> <select><option>Name of the search 1</option><option>Name of the search 2</option></select>
+                                        </p>
+                                        <p>
+                                            <textarea style="width: 100%;" cols="20" rows="10" name="flexidxhs[custom-searches]"><?php echo _custom_searches_to_text($opt['custom-searches']);?></textarea>
+                                            <em>Make sure you use the correct syntax to add custom searches, otherwise your widget will be broken.</em>
+                                        </p>
+                                    </div>
+                               </div>
+
+                               <div class="postbox">
+                                    <div class="handlediv" title="Click to toggle"><br /></div>
+                                    <h3 class="hndle"><span>Additional Widget Markup</span></h3>
+                                    <div class="inside">
+                                        <p>Some times you may need to wrap widget into additional tags for better styling. You can do it in this section.</p>
+                                        <table class="form-table">
+                                            <tr>
+                                                <th valign="top" scope="row">Before Title:</th>
+                                                <td><input type="text" name="flexidxhs[widget-markup][before-title]" value='<?php echo html_entity_decode($opt['widget-markup']['before-title']);?>' size="40"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th valign="top" scope="row">After Title:</th>
+                                                <td><input type="text" name="flexidxhs[widget-markup][after-title]" value='<?php echo html_entity_decode($opt['widget-markup']['after-title']);?>' size="40"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th valign="top" scope="row">Before Widget:</th>
+                                                <td><input type="text" name="flexidxhs[widget-markup][before-widget]" value='<?php echo html_entity_decode($opt['widget-markup']['before-widget']);?>' size="40"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th valign="top" scope="row">After Widget:</th>
+                                                <td><input type="text" name="flexidxhs[widget-markup][after-widget]" value='<?php echo html_entity_decode($opt['widget-markup']['after-widget']);?>' size="40"/></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
                         </div>
-                        <br/><br/><br/>
                 </div>
+
         </div>
+
         <?php
             echo flexIDXHS_settings_right_column();
         ?>
+        <br clear="all" />
+        <input class="button-primary" type="submit" name="submit" value="Save Options" />
         </form>
     </div>
 <?php
 }
 
 function flexIDXHS_options_validate($opt){
-    $opt['city-list'] = _text_to_array($opt['city-list']);
+    $opt['city-list']           = _text_to_array($opt['city-list']);
+    $opt['custom-searches']     = _custom_searches_to_array($opt['custom-searches']);
+    foreach($opt['widget-markup'] as $k => $v){
+        $opt['widget-markup'][$k] = htmlentities($v, ENT_QUOTES);
+    }
     return $opt;
 }
 
@@ -187,6 +267,57 @@ function _text_to_array($text){
         array_filter($output);
         return $output;
     }
+}
+
+/*
+ * Returns a multidimentional array of custom searches
+ */
+function _custom_searches_to_array($text){
+
+    $field_chunks = explode('#', trim($text));
+    $fields = array();
+    foreach($field_chunks as $chunk){
+        if($chunk != ''){
+            $lines = explode("\n", $chunk);
+            $selections = array();
+            foreach($lines as $k=>$v){
+                if(!empty($lines[$k]) && $lines[$k] != NULL && strlen($lines[$k])>1){
+                    $selections[] = trim($v);
+                }
+            }
+            array_filter($selections);
+            $tmp = array();
+            $options = array();
+            foreach($selections as $k => $v){
+                if($k == 0){
+                    $k = 'label';
+                    $tmp[$k] = $v;
+                }else{
+                    $options = explode(' - ', $v);
+                    $tmp[$options[1]] = $options[0];
+                }
+            }
+            $fields[$tmp['label']] = array_filter($tmp);
+        }
+    }
+    array_filter($fields);
+    return $fields;
+}
+
+function _custom_searches_to_text($array = array()){
+
+    if(!is_array($array) || empty($array))
+        return;
+    
+    foreach($array as $field){
+        $output .= '#'.$field['label'] . "\n";
+        unset($field['label']);
+        foreach($field as $url => $label){
+            $output .= $label . ' - ' . $url . "\n";
+        }
+    }
+
+    return trim($output);
 }
 
 function flexIDXHS_like_plugin(){
