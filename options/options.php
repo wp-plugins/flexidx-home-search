@@ -150,7 +150,7 @@ function flexIDXHS_config_page(){
                                                     </tr>
                                                     <tr>
                                                         <th valign="top" scope="row">Display Advanced Search Button:</th>
-                                                        <td><input type="checkbox" name="flexidxhs[search-buttons][display-advanced-search]" <?php checked($opt['search-buttons']['display-advanced-search'], true, true);?> /></td>
+                                                        <td><input type="checkbox" name="flexidxhs[search-buttons][display-advanced-search]" value="1" <?php checked($opt['search-buttons']['display-advanced-search'], true, true);?> /></td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -323,6 +323,7 @@ function _custom_searches_to_text($array = array()){
 function flexIDXHS_like_plugin(){
 	$content = '
 	<p>Help us spread the word :)</p>
+        <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.phoenixhomes.com%2Ftech%2Fflexidx-home-search&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:200px; height:45px;" allowTransparency="true"></iframe>
 	<ul>
 		<li>Link to it or blog about the plugin, so other users can find out about it.</li>
 		<li>Give it a good rating on <a href="http://wordpress.org/extend/plugins/flexidx-home-search/">WordPress.org</a></li>

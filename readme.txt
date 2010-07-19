@@ -4,7 +4,7 @@ Donate link: https://www.cancer.org/aspx/Donation/DON_1_Donate_Online_Now.aspx
 Tags: idx, mls, flexIDX, flexMLS, home search, widget, iframe, real estate, property listings
 Requires at least: 2.9
 Tested up to: 3.0
-Stable tag: 1.0beta
+Stable tag: 1.0.1beta
 
 flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sidebars as well as ability to generate custom search links and iframes that can be embedded into post and page content.
 
