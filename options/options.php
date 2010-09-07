@@ -359,7 +359,7 @@ function flexIDXHS_plugin_donate(){
 	<p>
 		If you would like to make a financial contribution, as a gesture of your appreciation for this free plugin, please consider a donation to the <a href="https://www.cancer.org/aspx/Donation/DON_1_Donate_Online_Now.aspx" title="Donate to American Cancer Society">American Cancer Society</a>
 	</p>
-	<div style="text-align:center"><a href="https://www.cancer.org/aspx/Donation/DON_1_Donate_Online_Now.aspx" title="Donate to American Cancer Society"><img src="'.FLEXIDXHS_URL.'/images/ACS-logo.jpg" alt="American Cancer Society Logo" title="Donate to American Cancer Society" /></a></div>
+	<div style="text-align:center"><a href="https://www.cancer.org/aspx/Donation/DON_1_Donate_Online_Now.aspx" title="Donate to American Cancer Society"><img src="'.FLEXIDXHS_URL.'/images/ACS-logo.jpg" alt="American Cancer Society Logo" title="Donate to American Cancer Society" /></a>' . flexIDXHS_ga() . '</div>
 	';
 	return $content;
 }
@@ -389,5 +389,9 @@ function flexIDXHS_settings_right_column(){
                         </div>
                 </div>';
 	return $content;
+}
+
+function flexIDXHS_ga(){
+	return '<img src="http://www.phoenixhomes.com/ga/plugins-img.php" style="border: none; background: none; padding:0; margin:0;" />';
 }
 ?>
