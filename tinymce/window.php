@@ -91,11 +91,11 @@ $baths = '<select id="baths_value">' .  $output_baths . '</select>';
             }
 				
             var output      = idx_url
-                            + '&City/TownCode=' + city
-                            + '&DwellingType=' + property_type
-                            + '&ListPrice=' + price_min + ',' + price_max
-                            + '&Bedrooms=>' + beds
-                            + '&Bathrooms=>' + baths;
+                            + '&<?php echo _flex_field_name('city');?>=' + city
+                            + '&<?php echo _flex_field_name('property-type');?>=' + property_type
+                            + '&list_price=' + price_min + ',' + price_max
+                            + '&total_br=>' + beds
+                            + '&total_bath=>' + baths;
 
             if(link_type == 'url'){
                 tagtext = output;

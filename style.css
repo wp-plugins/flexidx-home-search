@@ -72,3 +72,8 @@ div.advanced-search-off {
 div.advanced-search-off .SearchNow {
     float: none;
 }
+.full-screen-link {
+    display: block;
+    text-align: right;
+    margin: 3px;
+}

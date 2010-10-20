@@ -4,13 +4,14 @@ Plugin Name: flexIDX Home Search
 Plugin URI: http://www.phoenixhomes.com/tech/flexidx-home-search
 Description: flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sidebars as well as ability to generate custom search links and iframes that can be embedded into post and page content.
 Author: Max Chirkov
-Version: 1.1.0
+Version: 2.x.1
 Author URI: http://www.PhoenixHomes.com
 */
 
 define("FLEXIDXHS_BASENAME", plugin_basename(dirname(__FILE__)));
 define("FLEXIDXHS_DIR", WP_PLUGIN_DIR . '/' . FLEXIDXHS_BASENAME);
 define("FLEXIDXHS_URL", WP_PLUGIN_URL . '/' . FLEXIDXHS_BASENAME);
+define("FLEXIDXHS_LIB", FLEXIDXHS_DIR . '/lib');
 
 include 'options/options.php';
 $flexidxhs_opt = get_option('flexidxhs');
@@ -630,6 +631,12 @@ class flexIDXHS_CustomSearch extends WP_Widget {
 add_action('wp_head', 'flexIDXHS_js');
 function flexIDXHS_js(){
     global $flexidxhs_opt;
+
+    $js_search = _js_search();
+    $js_advsearch = _js_advsearch();    
+    $city = _flex_field_name('city');
+    $property_type = _flex_field_name('property-type');
+
     $output = <<<ENDOFHTMLBLOCK
 <script type="text/javascript">
 /* <![CDATA[ */
@@ -668,24 +675,54 @@ function searchnow(form_id) {
   }
 
   var search_link = base_url;
-  if(typeof property_type != 'undefined' && property_type != ''){ search_link += '&DwellingType=' + property_type; }
-  if(typeof city  != 'undefined' && city != ''){ search_link += '&city=' + city; }
+  if(typeof property_type != 'undefined' && property_type != ''){ search_link += '&{$property_type}=' + property_type; }
+  if(typeof city  != 'undefined' && city != ''){ search_link += '&{$city}=' + city; }
   if(typeof min_price  != 'undefined' && min_price != '' && typeof max_price  != 'undefined' && max_price != ''){ search_link += '&list_price=' + min_price + ',' + max_price; }
   if(typeof price_range != 'undefined' && price_range != ''){ search_link += '&list_price=' + price_range; }
   if(typeof bedrooms  != 'undefined' && bedrooms != ''){ search_link += '&total_br=>' + bedrooms; }
   if(typeof bathrooms  != 'undefined' && bathrooms != ''){ search_link += '&total_bath=>' + bathrooms; }
 
-  popupWin = window.open(search_link, 'open_window');
+  /*popupWin = window.open(search_link, 'open_window');*/
+  {$js_search}
 }
 
 function advsearch() {
-  popupWin = window.open(quick_search_base_url, 'open_window');
+  /*popupWin = window.open(quick_search_base_url, 'open_window');*/
+  {$js_advsearch}
 }
 /* ]]> */
 </script>
 ENDOFHTMLBLOCK;
 
     echo $output;
+}
+
+function _flex_field_name($name){
+    global $flexidxhs_opt;
+    $default_names = array(
+        'city'          => 'city',
+        'property-type' => 'DwellingType',
+        'price_min'     => 'min-price',
+        'price_max'     => 'max-price',
+        'beds'          => 'bedrooms',
+        'baths'         => 'bathrooms',
+    );
+    if($flexidxhs_opt['field-names'][$name]){
+        return $flexidxhs_opt['field-names'][$name];
+    }
+    return $default_names[$name];
+}
+
+function _js_search(){
+    $js_string = "popupWin = window.open(search_link, 'open_window');";
+    $js_string = apply_filters('flexidx_js_search', $js_string);
+    return $js_string;
+}
+
+function _js_advsearch(){
+    $js_string = "popupWin = window.open(quick_search_base_url, 'open_window');";
+    $js_string = apply_filters('flexidx_js_advsearch', $js_string);
+    return $js_string;
 }
 
 function flexIDXHS_QuickSearch_HTML($fields_array = false){
@@ -735,10 +772,10 @@ function flexIDXHS_baths(){
     $baths = array(1=>'1+', 2=>'2+', 3=>'3+', 4=>'4+', 5=>'5+', 6=>'6+');
     return $baths;
 }
-function flexIDXHS_price_min(){
+function flexIDXHS_price_min(){    
     $price_min = array(
 		0 => 'No Min Price', 50000 => '$50,000', 100000 => '$100,000', 150000 => '$150,000', 200000 => '$200,000', 250000 => '$250,000', 300000 => '$300,000', 350000 => '$350,000', 400000 => '$400,000', 450000 => '$450,000', 500000 => '$500,000', 550000 => '$550,000', 600000 => '$600,000', 650000 => '$650,000', 700000 => '$700,000', 750000 => '$750,000', 800000 => '$800,000', 850000 => '$850,000', 900000 => '$900,000', 950000 => '$950,000', 1000000 => '$1,000,000', 1250000 => '$1250,000', 1500000 => '$1500,000', 1750000 => '$1750,000', 2000000 => '$2,000,000', 2500000 => '$2,500,000', 3000000 => '$3,000,000',
-	);
+	);    
     return $price_min;
 }
 function flexIDXHS_price_max(){
@@ -748,12 +785,15 @@ function flexIDXHS_price_max(){
     return $price_max;
 }
 function flexIDXHS_property_types(){
-    $property_types = array(
-		//'label'         => ($opt['label-names']['property-type']) ? $opt['label-names']['property-type'] : 'Select Property Type',
-		'SF,PH'         => 'Single Family Homes',
-		'TH,AF'         => 'Condos/Townhomes',
-		'LS'            => 'Loft Style',
-	);
+    global $flexidxhs_opt;
+    if(!$property_types = $flexidxhs_opt['field-names']['property-type-values']){
+        $property_types = array(
+                    //'label'         => ($opt['label-names']['property-type']) ? $opt['label-names']['property-type'] : 'Select Property Type',
+                    'SF,PH'         => 'Single Family Homes',
+                    'TH,AF'         => 'Condos/Townhomes',
+                    'LS'            => 'Loft Style',
+            );
+    }
     return $property_types;
 }
 function flexIDXHS_price_range(){
@@ -786,7 +826,7 @@ function flexIDXHS_price_range(){
 
 function flexIDXHS_QuickSearch_form($fields_array = false){
     global $flexidxhs_opt;
-    $opt = $flexidxhs_opt;
+    $opt = $flexidxhs_opt;    
 
     if(is_array($opt['custom-searches'])){
         $custom_search_names = array_keys($opt['custom-searches']);
@@ -796,9 +836,10 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
         $query_properties = flexIDXHS_prepare_fields_array();
     }else{
         $query_properties = $fields_array;
-    }
-
+    }    
+        
 	foreach($query_properties as $name => $properties){
+            
                 /*
                  * Checking Fields label Visibility Settings
                  */
@@ -806,19 +847,21 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
 
                     if($opt['label-visibility'] == 'outside'){
                         $output .= '<label class="label_'. str_replace(' ', '', strtolower($name)) .'"><span>'. $properties['label'] .'</span>'; $close_label = '</label>';
-                        unset($properties['label']);
+                    
                     }elseif($opt['label-visibility'] == 'inside'){
                         $inside_label .= "\t" . '<option value="">'. $properties['label'] .'</option>' . "\n";
-                        unset($properties['label']);
-                    }else{
-                        unset($properties['label']);
+                    
                     }
+                    unset($properties['label']);
+                    
                 }
                 
                 if($name == 'City'){
                     foreach($properties as $k => $v){
                         if(is_numeric($k)){
                             $_cities[$v] = $v;
+                        }else{
+                            $_cities[$k] = $v;
                         }
                     }
                     unset($properties);
@@ -988,7 +1031,7 @@ function flexIDXHS_styles(){
 }
 
 if($flexidxhs_opt['idx-url']){
-	add_action('init', 'flexIDXHS_scripts');
+    add_action('init', 'flexIDXHS_scripts');
     add_action('wp_head', 'flexIDXHS_styles');
     add_action('widgets_init', create_function('', 'return register_widget("flexIDXHS_QuickSearch");'));
     add_action('widgets_init', create_function('', 'return register_widget("flexIDXHS_CustomSearch");'));
@@ -1006,14 +1049,21 @@ function flexIDXHS_widget_shortcode($atts = array()){
 add_shortcode('flexidxhs', 'flexIDXHS_widget_shortcode');
 
 function flexIDX_iframe_shortcode($atts){
+    global $flexidxhs_opt;
     extract(
         shortcode_atts(array(
             'url'       => false,
-            'width'     => '100%',
-            'height'    => '800',
+            'width'     => $flexidxhs_opt['shortcodes']['iframe-width'],
+            'height'    => $flexidxhs_opt['shortcodes']['iframe-height'],
         ), $atts)
-    );    
-    return '<iframe src="' . esc_attr($url) . '" width="' . esc_attr($width) . '" height="' . esc_attr($height) . '"></iframe>';
+    );
+    if($flexidxhs_opt['shortcodes']['full-screen-link']){
+        if($flexidxhs_opt['shortcodes']['link-title']){
+            $title = ' title="' . $flexidxhs_opt['shortcodes']['link-title'] . '"';
+        }
+        $link = '<a class="full-screen-link"'. $title . ' href="' . esc_attr($url) . '" target="_blank">' . $flexidxhs_opt['shortcodes']['link-anchor'] . '</a>';
+    }
+    return $link . '<iframe src="' . esc_attr($url) . '" width="' . esc_attr($width) . '" height="' . esc_attr($height) . '"></iframe>' . $link;
 }
 add_shortcode('idxiframe', 'flexIDX_iframe_shortcode');
 ?>
