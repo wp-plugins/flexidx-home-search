@@ -4,7 +4,7 @@ Plugin Name: flexIDX Home Search
 Plugin URI: http://www.phoenixhomes.com/tech/flexidx-home-search
 Description: flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sidebars as well as ability to generate custom search links and iframes that can be embedded into post and page content.
 Author: Max Chirkov
-Version: 2.x.2
+Version: 2.x.3
 Author URI: http://www.PhoenixHomes.com
 */
 
@@ -837,7 +837,7 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
     }else{
         $query_properties = $fields_array;
     }    
-        
+
 	foreach($query_properties as $name => $properties){
             
                 /*
@@ -858,10 +858,11 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
                 
                 if($name == 'City'){
                     foreach($properties as $k => $v){
-                        if(is_numeric($k)){
-                            $_cities[$v] = $v;
-                        }else{
+                        //check if the key is a string, which meants it's a custom value, otherwise the value and the option label are the same.
+                        if(is_string($k)){
                             $_cities[$k] = $v;
+                        }else{
+                            $_cities[$v] = $v;
                         }
                     }
                     unset($properties);
@@ -870,7 +871,7 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
 
 
 
-                if(in_array($name, $custom_search_names)){
+                if($custom_search_names && in_array($name, $custom_search_names)){
                     $id = 'flexidxhs_custom_field';
                 }else{
                     $id = str_replace(' ', '_', strtolower($name));

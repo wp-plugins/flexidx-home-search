@@ -463,7 +463,7 @@ function _selectionlist_to_array($text){
             if(!empty($array[$k]) && $array[$k] != NULL && strlen($array[$k])>1){
                 $match = explode(" - ", trim($v));
                 if($match[1]){
-                    $output[$match[0]] = $match[1];
+                    $output["{$match[0]}"] = $match[1];
                 }else{
                     $output[] = $match[0];
                 }
@@ -478,15 +478,15 @@ function _selectionlist_to_text($array){
     if(!is_array($array))
         return;
     
-    if($array[0]){
-        foreach($array as $k => $v){
+    
+    foreach($array as $k => $v){
+        if(is_string($k)){
+            $output .= $k . ' - ' . $v . "\n";
+        }else{
             $output .= $v . "\n";
         }
-    }else{
-        foreach($array as $k => $v){
-            $output .= $k . ' - ' . $v . "\n";
-        }
     }
+    
     return $output;
 }
 ?>
