@@ -5,7 +5,7 @@ Tags: idx, mls, flexIDX, flexMLS, home search, widget, iframe, real estate, prop
 Requires at least: 3.0
 Tested up to: 3.0
 Stable tag: 1.1.0
-Version: 2.x.1
+Version: 2.x.2
 
 flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sidebars as well as ability to generate custom search links and iframes that can be embedded into post and page content.
 

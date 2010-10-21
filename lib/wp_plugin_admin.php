@@ -1,8 +1,7 @@
 <?php
-
 /*
 *  WordPress Plugin Admin Class
-** Version 0.2.0
+** Version 0.2.1
 ** Author: Max Chirkov
 ** Based on work of: Joost de Valk (Yoast Plugin Admin), Ian Stewart (Thematic Theme Options)
 */
@@ -125,14 +124,17 @@ if(!class_exists('Plugin_Admin_Class')){
 		}
 
                 function admin_head(){
-                    echo '<script type="text/javascript" src="../wp-includes/js/jquery/ui.sortable.js"></script>';
-                    echo '<link type="text/css" href="http://jquery-ui.googlecode.com/svn/tags/latest/themes/base/jquery.ui.all.css" rel="stylesheet" />';
-                    echo '
-                        <script type="text/javascript">
-                        jQuery(document).ready(function(){
-                            jQuery("#' . $this->hook . '_tabs").tabs();
-                        });
-                        </script>';
+                    //this condition is important, otherwise, if loads on other pages - breaks collapsible sidebar navigation.
+                    if (isset($_GET['page']) && ($_GET['page'] == $this->filename || $_GET['page'] == $this->hook)) {
+                        echo '<script type="text/javascript" src="../wp-includes/js/jquery/ui.sortable.js"></script>';
+                        echo '<link type="text/css" href="http://jquery-ui.googlecode.com/svn/tags/latest/themes/base/jquery.ui.all.css" rel="stylesheet" />';
+                        echo '
+                            <script type="text/javascript">
+                            jQuery(document).ready(function(){
+                                jQuery("#' . $this->hook . '_tabs").tabs();
+                            });
+                            </script>';
+                    }
                 }
 
 		/**
@@ -228,8 +230,16 @@ if(!class_exists('Plugin_Admin_Class')){
                                 }
                             }
                         }
-                    }                    
-                    return $input;
+                    }
+
+                    //since tabs have separate forms, we need to murge the incomplete array of new settings into the existing settings array
+                    //$input = array_replace_recursive($this->options, $input);
+                    $new_input = $this->options;
+                    foreach($input as $k => $v){
+                        $new_input[$k] = $v;
+                    }
+
+                    return $new_input;
                 }
 
                 function config_page() {
@@ -640,9 +650,7 @@ if(!class_exists('Plugin_Admin_Class')){
                         endif;
                         //print_r($this->tabs);
                         //Check if tabs were created
-                        if(is_array($this->tabs) && count($this->tabs)>0){                            
-                            echo '<form  action="options.php" method="post" id="' . $this->hook .'-conf">';
-                            settings_fields($this->optionname . '-option-group');
+                        if(is_array($this->tabs) && count($this->tabs)>0){                                                       
                             
                             $tab_names = array_keys($this->tabs);
                             $i=1;
@@ -657,13 +665,21 @@ if(!class_exists('Plugin_Admin_Class')){
                             $i=1;                            
                             foreach($this->tabs as $columns){
                                 echo '<div id="tab-' . $i . '">';
+                                //each tab should have it's own form. Settings will merge with the existing ones on submission. See validation function.
+                                echo '<form action="options.php" method="post" id="' . $this->hook .'-conf">';
+                                echo '<input class="button-primary" type="submit" name="submit" value="Save Options" />';
+                                settings_fields($this->optionname . '-option-group');
                                 echo $this->_template_content($columns);
                                 echo '<div style="clear: both;"></div>';
+                                echo '<input class="button-primary" type="submit" name="submit" value="Save Options" />';
+                                //duplicated a referrer field to overwrite the one from settings_fields function to include tab anchor
+                                $ref = esc_attr( $_SERVER['REQUEST_URI'] );
+                                echo '<input type="hidden" name="_wp_http_referer" value="'. $ref . '#tab-' . $i . '" />';
+                                echo '</form>';
                                 echo '</div>';
                                 $i++;
                             }                           
-                            echo '</div>';
-                            echo '<input class="button-primary" type="submit" name="submit" value="Save Options" />';
+                            echo '</div>';                            
                         }else{                            
                             echo $this->_template_content($this->columns);
                         }                        
@@ -671,8 +687,8 @@ if(!class_exists('Plugin_Admin_Class')){
                         <br clear="all" />
                         <?php if(!$this->tabs): ?>
                         <input class="button-primary" type="submit" name="submit" value="Save Options" />
-                        <?php endif; ?>
                     </form>
+                    <?php endif; ?>
                 </div>
                 <?php
                 }
