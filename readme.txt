@@ -11,14 +11,13 @@ flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sid
 == Description ==
 **flexIDX Home Search** plugin provides an easy solution to embed home search form into your sidebars, and page/post content. Generate custom search links and iframes withing WYSIWYG editor and embed them into your community related pages with a click of a mouse.
 
-**IMPORTANT!! Read before downloading.**
-**You have to be a member of the FlexMLS as well as have their paid IDX service. See official [flexMLS website](http://www.flexmls.com/ "Flex MLS Official Website").**
+**IMPORTANT!!!** **You have to be a member of the FlexMLS as well as have their paid IDX service. See official [flexMLS website](http://www.flexmls.com/ "Flex MLS Official Website").**
 
 **Implementation Examples**
 
 1.  Sidebar Home Search widget on [ScottsdaleHomes.com](http://www.ScottsdaleHomes.com "Scottsdale Real Estate").
 2.  [Video Preview](http://www.phoenixhomes.com/tech/flexidx-home-search "Watch a demonstration video").
-3.  [Video #1 - setup for non-Phoenix/AZ agents](http://http://screenr.com/s0D "Video #1 - Setting flexMLS IDX plugin for out of AZ state agents").
+3.  [Video #1 - setup for non-Phoenix/AZ agents](http://screenr.com/s0D "Video #1 - Setting flexMLS IDX plugin for out of AZ state agents").
 4.  [Video #2 - setup for non-Phoenix/AZ agents](http://screenr.com/H0D "Video #2 - Setting flexMLS IDX plugin for out of AZ state agents").
 
 **Features**
@@ -50,7 +49,7 @@ You don't really need to use shortcodes, but in case you want to get creative, y
 **Please Note:**
 Property type field name and its values may vary between different MLSes. You may need to enter your specific field name and its values manually. The videos below will walk you through the process.
 
-[Video #1 - setup for non-Phoenix/AZ agents](http://http://screenr.com/s0D "Video #1 - Setting flexMLS IDX plugin for out of AZ state agents").
+[Video #1 - setup for non-Phoenix/AZ agents](http://screenr.com/s0D "Video #1 - Setting flexMLS IDX plugin for out of AZ state agents").
 [Video #2 - setup for non-Phoenix/AZ agents](http://screenr.com/H0D "Video #2 - Setting flexMLS IDX plugin for out of AZ state agents").
 
 
