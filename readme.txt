@@ -4,8 +4,7 @@ Donate link: https://www.cancer.org/aspx/Donation/DON_1_Donate_Online_Now.aspx
 Tags: idx, mls, flexIDX, flexMLS, home search, widget, iframe, real estate, property listings
 Requires at least: 3.0
 Tested up to: 3.0
-Stable tag: 1.1.0
-Version: 2.x.3
+Stable tag: 2.0.0
 
 flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sidebars as well as ability to generate custom search links and iframes that can be embedded into post and page content.
 
@@ -47,6 +46,12 @@ You don't really need to use shortcodes, but in case you want to get creative, y
 2.  Activate the flexIDX Home Search on your plugins page.
 3.  Go to the flexIDX Options page and enter the IDX url that you generate from your flexMLS account.
 4.  After completing step #3 the flexIDX widget should be available in the Widgets section as well as the WYSIWYG button in the page editor.
+
+**Please Note:**
+Property type field name and its values may vary between different MLSes. You may need to enter your specific field name and its values manually. The videos below will walk you through the process.
+
+[Video #1 - setup for non-Phoenix/AZ agents](http://http://screenr.com/s0D "Video #1 - Setting flexMLS IDX plugin for out of AZ state agents").
+[Video #2 - setup for non-Phoenix/AZ agents](http://screenr.com/H0D "Video #2 - Setting flexMLS IDX plugin for out of AZ state agents").
 
 
 == Screenshots ==
