@@ -171,7 +171,7 @@ class flexIDXHS_Admin extends Plugin_Admin_Class {
             'Shortcode Settings'        => array(
                 array(
                     'id'                => array('shortcodes', 'full-screen-link'),
-                    'label'             => 'Diplay "Full Screen" iFrame Link',
+                    'label'             => 'Display "Full Screen" iFrame Link',
                     'desc'              => 'This link opens iframe in new window in full screen.',
                     'type'              => 'checkbox',                    
                     'attr'              => array('checked' => 'checked'),
