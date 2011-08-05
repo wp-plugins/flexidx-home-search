@@ -148,18 +148,18 @@ class flexIDX {
     $output .= '<h4><a href="' . $this->uri($listing, 'listing') . '">' . $this->_normalize($this->listing_address(array($listing)), 'string') . '</a></h4>';
 
     if ($listing['StandardFields']['Photos'][0]['Uri300']) {
-      $output .= '<div class="main-photo"><a href="' . $this->uri($listing, 'listing') . '"><img src="' . $listing['StandardFields']['Photos'][0]['Uri300'] . '"' . $alt . '></a></div>';
+      $output .= '<div class="main-photo idx-row"><a href="' . $this->uri($listing, 'listing') . '"><img src="' . $listing['StandardFields']['Photos'][0]['Uri300'] . '"' . $alt . '></a></div>';
     } else {
       $output .= '<div class="main-photo"><a href="' . $this->uri($listing, 'listing') . '"><img src="' . FLEXIDXHS_URL . '/images/photo-na.png"></a></div>';
     }
     $output .= '<div class="main-details">';
 
-    $output .= '<div class="listprice"><span class="label">Price:</span> $' . number_format($listing['StandardFields']['ListPrice']) . "</div>";
-    $output .= "<div class=\"listingid\"><span class=\"label\">MLS#:</span> {$listing['StandardFields']['ListingId']}</div>\n";
-    $output .= "<div class=\"propertysubtype\"><span class=\"label\">Property Type:</span> {$listing['StandardFields']['PropertySubType']}</div>\n";
-    $output .= "<div class=\"bedrooms\"><span class=\"label\">Bedrooms:</span> {$listing['StandardFields']['BedsTotal']}</div>";
-    $output .= "<div class=\"bathrooms\"><span class=\"label\">Bathrooms:</span> {$listing['StandardFields']['BathsTotal']}</div>";
-    $output .= "<div class=\"listofficename\"><span class=\"label\">Listing Office:</span> {$listing['StandardFields']['ListOfficeName']}</div>";
+    $output .= '<div class="listprice idx-row"><span class="label">Price:</span> $' . number_format($listing['StandardFields']['ListPrice']) . "</div>";
+    $output .= "<div class=\"listingid idx-row\"><span class=\"label\">MLS#:</span> {$listing['StandardFields']['ListingId']}</div>\n";
+    $output .= "<div class=\"propertysubtype idx-row\"><span class=\"label\">Property Type:</span> {$listing['StandardFields']['PropertySubType']}</div>\n";
+    $output .= "<div class=\"bedrooms idx-row\"><span class=\"label\">Bedrooms:</span> {$listing['StandardFields']['BedsTotal']}</div>";
+    $output .= "<div class=\"bathrooms idx-row\"><span class=\"label\">Bathrooms:</span> {$listing['StandardFields']['BathsTotal']}</div>";
+    $output .= "<div class=\"listofficename idx-row\"><span class=\"label\">Listing Office:</span> {$listing['StandardFields']['ListOfficeName']}</div>";
     $output .= '<div class="idx-contact-listing">';
     $output .= '<a href="' . $this->uri($listing, 'listing') . '">View Details</a>';
     $output .= '</div>';
@@ -416,11 +416,11 @@ class flexIDX {
 
     $content .= '<div class="idx-main-details">';
     foreach ($main_fields as $label => $field) {
-      $content .= '<div class="idx-' . $field . '"><span class="label">' . $label . ':</span>' . $data['validated'][0]['StandardFields'][$field] . '</div>';
+      $content .= '<div class="idx-' . $field . ' idx-row"><span class="label">' . $label . ':</span>' . $data['validated'][0]['StandardFields'][$field] . '</div>';
     }
     if ($fields)
       foreach ($fields as $label => $value) {
-        $content .= '<div><span class="label">' . $label . ':</span>' . $value . '</div>';
+        $content .= '<div class="idx-row"><span class="label">' . $label . ':</span>' . $value . '</div>';
       }
 
     //Listing Contact Buttons
@@ -527,7 +527,7 @@ class flexIDX {
           $output .= '<tr><th colspan="2">' . $section . '</th></tr>';
         }
       } else {
-        $output .= '<tr><td class="idx-listing-custom-filed-name">' . $name . '</td><td>' . $section . '</td></tr>';
+        $output .= '<tr class="idx-row"><td class="idx-listing-custom-filed-name">' . $name . '</td><td>' . $section . '</td></tr>';
       }
     }
     return $output;

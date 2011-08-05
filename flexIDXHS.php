@@ -1012,12 +1012,15 @@ function flexIDXHS_prepare_fields_array($include_custom_fields = false){
 
 
 function flexIDXHS_admin_scripts(){
-    if (isset($_GET['page']) && strstr($_GET['page'], 'flexIDX_options') || strstr($_GET['page'], 'flexIDX_options')){
+    if (isset($_GET['page']) && strstr($_GET['page'], 'flexidxhs') || strstr($_GET['page'], 'flexidxhs')){
 		wp_enqueue_script('postbox');
 		wp_enqueue_script('dashboard');
+                wp_enqueue_script('farbtastic');
 		wp_enqueue_style('dashboard');
 		wp_enqueue_style('global');
 		wp_enqueue_style('wp-admin');
+                wp_enqueue_style('farbtastic');
+
 	}
 }
 add_action('init', 'flexIDXHS_admin_scripts');
@@ -1027,12 +1030,20 @@ function flexIDXHS_scripts(){
 }
 
 function flexIDXHS_styles(){
-	$myStyleUrl = FLEXIDXHS_CSS . '/style.css';
+    global $flexidxhs_opt;
+    $myStyleUrl = FLEXIDXHS_CSS . '/style.css';
     $myStyleFile = FLEXIDXHS_DIR . '/css/style.css';
     if ( file_exists($myStyleFile) ) {
         wp_register_style('flexIDXHS', $myStyleUrl);
         wp_print_styles( 'flexIDXHS');
     }
+
+
+    $color = $flexidxhs_opt['color'];
+    //if($color && !empty($color)){
+      wp_register_style('flexidxhs-color', get_bloginfo( 'url' ) . '/?flexcolor=true');
+      wp_print_styles('flexidxhs-color');
+    //}
 }
 
 if($flexidxhs_opt['idx-url'] || $flexidxhs_opt['idx']['api_key']){
@@ -1071,4 +1082,26 @@ function flexIDX_iframe_shortcode($atts){
     return $link . '<iframe src="' . esc_attr($url) . '" width="' . esc_attr($width) . '" height="' . esc_attr($height) . '"></iframe>' . $link;
 }
 add_shortcode('idxiframe', 'flexIDX_iframe_shortcode');
+
+//Activate dynamic color css
+function flexIDXHS_dynamic_css(){
+    global $flexidxhs_opt;
+    $color = $flexidxhs_opt['color'];
+    if($_GET['flexcolor'] == true){
+      # get theme options
+      header( 'Content-Type: text/css' );
+      require FLEXIDXHS_INC . '/color_css.php';
+      exit;
+    }
+
+}
+add_action('parse_request', 'flexIDXHS_dynamic_css');
+
+function _ifcolor($value = false, $default = '#FFFFFF'){
+    if($value){
+      echo $value;
+    }else{
+      echo $default;
+    }
+}
 ?>

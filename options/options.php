@@ -398,8 +398,49 @@ class flexIDXHS_Admin extends Plugin_Admin_Class {
                     'attr'              => array('size' => 40),
                     'desc'              => 'Syntax: width by height in pixels separated by "x" without any spaces. Example: 600x450.',
                 ),
-                 * 
+                 *
                  */
+            ),
+            'Colors'                    => array(
+                array(
+                    'type'              => 'html',
+                    'default'           => _color_options(),
+                ),
+                array(
+                    'id'                => array('color', 'tab_bg_color'),
+                    'label'             => __('Tabs Background'),
+                    'default'           => '#EFEFEF',
+                    'type'              => 'text',
+                    'desc'              => '<div id="tab_bg_color_picker"></div>',
+                ),
+                array(
+                    'id'                => array('color', 'tab_brdr_color'),
+                    'label'             => __('Tabs Border'),
+                    'default'           => '#CCCCCC',
+                    'type'              => 'text',
+                    'desc'              => '<div id="tab_brdr_color_picker"></div>',
+                ),
+                array(
+                    'id'                => array('color', 'tab_bghover_color'),
+                    'label'             => __('Tabs Hover Background'),
+                    'default'           => '#DDDDDD',
+                    'type'              => 'text',
+                    'desc'              => '<div id="tab_bghover_color_picker"></div>',
+                ),
+                array(
+                    'id'                => array('color', 'row_bg_color'),
+                    'label'             => __('Table Rows Background'),
+                    'default'           => '#EFEFEF',
+                    'type'              => 'text',
+                    'desc'              => '<div id="row_bg_color_picker"></div>',
+                ),
+                array(
+                    'id'                => array('color', 'btn_bg_color'),
+                    'label'             => __('Button Background'),
+                    'default'           => '#DDDDDD',
+                    'type'              => 'text',
+                    'desc'              => '<div id="btn_bg_color_picker"></div>',
+                ),
             ),
         );
 
@@ -460,6 +501,7 @@ class flexIDXHS_Admin extends Plugin_Admin_Class {
         $this->add_box('flexIDX API Keys', $this->settings('flexIDX API Keys'), 3);
         $this->add_box('IDX Search Results Page', $this->settings('IDX Search Results Page'), 3);
         $this->add_box('Calls to Action & Lead Generation Forms', $this->auto_form($this->settings('Note 2'), false) . $this->fields($this->settings('Calls to Action & Lead Generation Forms')), 3);
+        $this->add_box('Colors', $this->settings('Colors'), 3);
 
         if(function_exists('srp_profile')){
           $this->add_box('Third Party Widgets', $this->settings('Additional Information'), 3);
@@ -610,5 +652,20 @@ function _pages_array(){
         $return[$page->ID] = $page->post_title;
     }
     return $return;
+}
+
+function _color_options(){
+  $html = <<<HTML
+<script>
+  jQuery(document).ready(function() {
+    jQuery("#tab_bg_color_picker").farbtastic("#color-tab_bg_color");
+    jQuery("#tab_brdr_color_picker").farbtastic("#color-tab_brdr_color");
+    jQuery("#tab_bghover_color_picker").farbtastic("#color-tab_bghover_color");
+    jQuery("#row_bg_color_picker").farbtastic("#color-row_bg_color");
+    jQuery("#btn_bg_color_picker").farbtastic("#color-btn_bg_color");
+  });
+</script>
+HTML;
+  return $html;
 }
 ?>
