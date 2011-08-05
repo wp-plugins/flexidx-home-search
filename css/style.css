@@ -1,0 +1,253 @@
+.clearfix:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+        }
+* html .clearfix             { zoom: 1; } /* IE6 */
+*:first-child+html .clearfix { zoom: 1; } /* IE7 */
+
+.flexIDXHS_QuickSearch input, .flexIDXHS_QuickSearch select {
+    margin: 0 0 0.5em 0;
+}
+
+.flexIDXHS_QuickSearch label {
+    display: block;
+    float: left;
+}
+.flexIDXHS_QuickSearch label span {
+    display: block;
+    clear: right;
+    text-align: left;
+}
+.flexIDXHS_QuickSearch select,
+.flexIDXHS_QuickSearch .label_city,
+.flexIDXHS_QuickSearch .label_propertytype,
+.flexIDXHS_QuickSearch .label_pricerange {
+    width: 100%;
+}
+.flexIDXHS_QuickSearch .label_minprice,
+.flexIDXHS_QuickSearch .label_maxprice,
+.flexIDXHS_QuickSearch .label_bedrooms,
+.flexIDXHS_QuickSearch .label_bathrooms {
+    width: 45%;
+}
+.flexIDXHS_QuickSearch .city,
+.flexIDXHS_QuickSearch .property_type,
+.flexIDXHS_QuickSearch .price_range {
+    width: 100%;
+}
+.flexIDXHS_QuickSearch .min_price,
+.flexIDXHS_QuickSearch .max_price,
+.flexIDXHS_QuickSearch .bedrooms,
+.flexIDXHS_QuickSearch .bathrooms,
+.flexIDXHS_QuickSearch .label_minprice,
+.flexIDXHS_QuickSearch .label_maxprice,
+.flexIDXHS_QuickSearch .label_bedrooms,
+.flexIDXHS_QuickSearch .label_bathrooms {
+    width: 45%;
+}
+.flexIDXHS_QuickSearch .label_minprice .min_price,
+.flexIDXHS_QuickSearch .label_maxprice .max_price,
+.flexIDXHS_QuickSearch .label_bedrooms .bedrooms,
+.flexIDXHS_QuickSearch .label_bathrooms .bathrooms {
+    width: 100%;
+}
+.flexIDXHS_QuickSearch .min_price,
+.flexIDXHS_QuickSearch .bedrooms,
+.flexIDXHS_QuickSearch .label_minprice,
+.flexIDXHS_QuickSearch .label_bathrooms {
+    float: left;
+}
+.flexIDXHS_QuickSearch .max_price,
+.flexIDXHS_QuickSearch .bathrooms,
+.flexIDXHS_QuickSearch .label_maxprice,
+.flexIDXHS_QuickSearch .label_bathrooms {
+    float: right;
+}
+.flexIDXHS_QuickSearch .SearchNow,
+.flexIDXHS_QuickSearch .AdvancedSearch {
+    font-size: 100%;
+}
+.flexIDXHS_QuickSearch .SearchNow {
+    float: left;
+}
+.flexIDXHS_QuickSearch .AdvancedSearch {
+    float: right;
+}
+div.advanced-search-off {
+    text-align: center;
+}
+div.advanced-search-off .SearchNow {
+    float: none;
+}
+.full-screen-link {
+    display: block;
+    text-align: right;
+    margin: 3px;
+}
+
+/***** FlexIDX CSS *****/
+.idx-results {
+    clear: both;
+    margin: 10px;
+}
+
+.idx-result-snippet {
+    padding: 10px;
+}
+
+.idx-result-snippet:hover {
+    -webkit-box-shadow: 0 0 5px #333;
+    -moz-box-shadow: 0 0 5px #333;
+    box-shadow: 0 0 5px #333;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.idx-result-snippet .main-photo {
+    float: left;
+    clear: left;
+    text-align: center;
+}
+.idx-result-snippet .main-details {
+    width: 50%;
+    float: right;
+    line-height: 20px;
+}
+
+.idx-result-snippet .main-details .label {
+    display: inline-block;
+    width: 100px;
+    margin-left: 5px;
+}
+
+.idx-contact-listing {
+    background: none!important;
+    margin: 10px;
+    text-align: center;
+}
+
+.idx-contact-listing a {
+    margin: 0 10px;
+    padding: 5px 10px;
+    text-decoration: none;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 3px #333;
+    -moz-box-shadow: 0 0 3px #333;
+    box-shadow: 0 0 3px #333;
+
+    background: #f6f8f9; /* Old browsers */
+    background: -moz-linear-gradient(top, #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f8f9), color-stop(50%,#e5ebee), color-stop(51%,#d7dee3), color-stop(100%,#f5f7f9)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* Opera11.10+ */
+    background: -ms-linear-gradient(top, #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f8f9', endColorstr='#f5f7f9',GradientType=0 ); /* IE6-9 */
+    background: linear-gradient(top, #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%); /* W3C */
+}
+
+.idx-contact-listing a:hover {
+    background: rgb(242,246,248); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(242,246,248,1)), color-stop(50%,rgba(216,225,231,1)), color-stop(51%,rgba(181,198,208,1)), color-stop(100%,rgba(224,239,249,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(242,246,248,1) 0%,rgba(216,225,231,1) 50%,rgba(181,198,208,1) 51%,rgba(224,239,249,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(242,246,248,1) 0%,rgba(216,225,231,1) 50%,rgba(181,198,208,1) 51%,rgba(224,239,249,1) 100%); /* Opera11.10+ */
+    background: -ms-linear-gradient(top, rgba(242,246,248,1) 0%,rgba(216,225,231,1) 50%,rgba(181,198,208,1) 51%,rgba(224,239,249,1) 100%); /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', endColorstr='#e0eff9',GradientType=0 ); /* IE6-9 */
+    background: linear-gradient(top, rgba(242,246,248,1) 0%,rgba(216,225,231,1) 50%,rgba(181,198,208,1) 51%,rgba(224,239,249,1) 100%); /* W3C */
+}
+
+.idx-result-snippet .main-photo img {
+    width: 270px;
+}
+
+.idx-pagination {
+    clear: both;
+}
+
+#idx-main-info {
+    width: 100%;
+}
+#idx-main-info .idx-contact-listing {
+    margin: 10px;
+    text-align: center;
+}
+
+.idx-contact-listing a {
+    display: block;
+    width: 160px;
+    margin: 0 auto;
+    line-height: normal;
+}
+
+.idx-main-img {
+    width: 53%;
+    float: left;
+    text-align: center;
+}
+
+.idx-main-details {
+    width: 45%;
+    float: right;
+    line-height: 20px;
+}
+
+.idx-main-details div:nth-child(odd), .idx-result-snippet .main-details div:nth-child(odd) {
+    background: #efefef;
+}
+.idx-main-details span{
+    display: inline-block;
+    width: 140px;
+    margin: 0 10px;
+}
+.idx-addl-imgs {
+    clear: both;
+    text-align: center;
+    margin: 10px 0;
+}
+.idx-addl-imgs a {
+    margin: 0 2px;
+}
+.idx-public-remarks {
+    border: 1px solid #ddd;
+    background: #efefef;
+    padding: 10px;
+    margin-bottom: 20px;
+    clear: both;
+}
+
+.market-stats {
+    display: inline-block;
+    width: 49%;
+    vertical-align: top;
+}
+
+.idx-listing-custom-filed-name {
+    width: 30%;
+}
+.idx-details-table {
+    width: 100%;
+}
+.idx-return2results {
+    margin: 10px 5px;
+}
+#form1, #form2 {
+  margin: 10px;
+}
+#idx_property_tabs .srp_MortgageCalcwidget {
+  width: 325px;
+  margin: auto;
+}
+
+.idx-details-table tr:nth-child(odd) td {
+  background: #fff;
+}
+.idx-details-table tr:nth-child(even) td {
+  background: #efefef;
+}
