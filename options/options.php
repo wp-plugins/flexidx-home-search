@@ -23,6 +23,13 @@ class flexIDXHS_Admin extends Plugin_Admin_Class {
                     'type'		=> 'text',
                     'attr'              => array('size' => 40),
                 ),
+                array(
+                    'label'     => __('Quick Search Results Page'),
+                    'desc'      => __('Select the page that will be used to display an iFrame with the seach results.'),
+                    'id'        => 'iframe',
+                    'type'      => 'select',
+                    'options'   => _pages_array(),
+                ),
             ),
 
 
@@ -489,4 +496,13 @@ function _selectionlist_to_text($array){
     
     return $output;
 }
-?>
+
+
+function _pages_array(){
+    $pages = get_pages();
+    $return[0] = ' - New window - no iFrame - ';
+    foreach($pages as $page){        
+        $return[$page->ID] = $page->post_title;
+    }
+    return $return;
+}

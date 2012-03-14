@@ -4,7 +4,7 @@ Plugin Name: flexIDX Home Search
 Plugin URI: http://www.phoenixhomes.com/tech/flexidx-home-search
 Description: flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sidebars as well as ability to generate custom search links and iframes that can be embedded into post and page content.
 Author: Max Chirkov
-Version: 2.0.1
+Version: 2.1.0
 Author URI: http://www.PhoenixHomes.com
 */
 
@@ -999,7 +999,7 @@ function flexIDXHS_prepare_fields_array($include_custom_fields = false){
             );
        }
 
-       if ( $include_custom_fields ) {
+       if ( $include_custom_fields && is_array($opt['custom-searches']) ) {
             $query_properties = array_merge($query_properties, $opt['custom-searches']);
        }
 
@@ -1067,4 +1067,55 @@ function flexIDX_iframe_shortcode($atts){
     return $link . '<iframe src="' . esc_attr($url) . '" width="' . esc_attr($width) . '" height="' . esc_attr($height) . '"></iframe>' . $link;
 }
 add_shortcode('idxiframe', 'flexIDX_iframe_shortcode');
-?>
+
+
+/**
+ * Customizing JS link for the IDX Quick Homes search to output within custom template
+ */
+function _idx_js_search($content){
+        global $flexidxhs_opt;
+
+        if( !isset($flexidxhs_opt['iframe']) || 0 ==  $flexidxhs_opt['iframe'] )
+                return $content;
+
+        $output = "     
+        var wrapper_link = '". get_permalink( $flexidxhs_opt['iframe'] ) . "';        
+        popupWin = window.open(wrapper_link + '?idxurl=' + search_link, '_self');
+        ";
+        return $output;
+}
+function _idx_js_advsearch($content){ 
+        global $flexidxhs_opt;
+
+        if( !isset($flexidxhs_opt['iframe']) || 0 ==  $flexidxhs_opt['iframe'] )
+                return $content;
+
+        $output = "     
+        var wrapper_link = '". get_permalink( $flexidxhs_opt['iframe'] ) . "';     
+        popupWin = window.open(wrapper_link + '?idxurl=' + quick_search_base_url, '_self');
+        ";
+        return $output;
+}
+function _insert_idx_iframe($content){
+        global $flexidxhs_opt;
+        
+        if( isset($_GET['idxurl']) ){
+                $atts['url'] = $_GET['idxurl'];        
+        }else{
+                //just insert the default search iframe
+                $atts['url'] = $flexidxhs_opt['idx-url'];
+        }
+        
+        return $content . flexIDX_iframe_shortcode($atts);
+}
+function _check_idx_iframe_page(){
+        global $flexidxhs_opt;
+
+        if( isset($flexidxhs_opt['iframe']) && 0 !=  $flexidxhs_opt['iframe'] && is_page($flexidxhs_opt['iframe']) )
+                add_filter('the_content', '_insert_idx_iframe', 10);        
+
+}
+
+add_action('wp', '_check_idx_iframe_page');
+add_filter('flexidx_js_search', '_idx_js_search');
+add_filter('flexidx_js_advsearch', '_idx_js_advsearch');
