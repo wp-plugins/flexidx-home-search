@@ -3,8 +3,8 @@ Contributors: Max Chirkov
 Donate link: https://www.cancer.org/aspx/Donation/DON_1_Donate_Online_Now.aspx
 Tags: idx, mls, flexIDX, flexMLS, home search, widget, iframe, real estate, property listings
 Requires at least: 3.0
-Tested up to: 3.3.1
-Stable tag: 2.1.0
+Tested up to: 3.5.1
+Stable tag: 2.1.1
 
 flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sidebars as well as ability to generate custom search links and iframes that can be embedded into post and page content.
 
@@ -63,6 +63,9 @@ Property type field name and its values may vary between different MLSes. You ma
 
 
 == Changelog ==
+
+**2.1.1**
+- Fixed: search criteria weren't getting passed from quick home search into the iFrame.
 
 **2.1.0**
 - New Feature: Added ability to open search results in an iFrame when using Quick Home Search widget.

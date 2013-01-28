@@ -4,7 +4,7 @@ Plugin Name: flexIDX Home Search
 Plugin URI: http://www.phoenixhomes.com/tech/flexidx-home-search
 Description: flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sidebars as well as ability to generate custom search links and iframes that can be embedded into post and page content.
 Author: Max Chirkov
-Version: 2.1.0
+Version: 2.1.1
 Author URI: http://www.PhoenixHomes.com
 */
 
@@ -35,8 +35,8 @@ class flexIDXHS_QuickSearch extends WP_Widget {
                 $_after_widget   = html_entity_decode($opt['widget-markup']['after-widget']);
 		$title = apply_filters('flexIDXHS_QuickSearch', empty($instance['title']) ? '' : $instance['title']);
 		if ( !empty( $title ) ) { $title = $before_title . $title . $after_title; }
-			$output = $before_widget;			
-			$output .= $title;                        
+			$output = $before_widget;
+			$output .= $title;
 			$output .= $_before_widget . flexIDXHS_QuickSearch_HTML() . $_after_widget;
 			$output .= $after_widget;
 
@@ -312,13 +312,13 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                 $field_names = $tmp;
                 foreach($field_names as $name){
                     $fields[$name] = $fields_array[$name];
-                }                
+                }
 
 		if ( !empty( $title ) ) { $title = $before_title . $title . $after_title; }
 			$output = $before_widget;
 			$output .= $title;
 			$output .= $_before_widget . flexIDXHS_QuickSearch_HTML($fields) . $_after_widget;
-			$output .= $after_widget;                
+			$output .= $after_widget;
 
                     if($action == "1"){
 			switch ($show) {
@@ -564,7 +564,7 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                         }
                     }
                 }
-                
+
                 //Merge field_names and array('custom_field') so they can be ordered
                 if($custom_fields){
                     $fields = array_merge($field_names, array('Custom Field'));
@@ -575,7 +575,7 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                 //Set a temporary array of field names in the $instance
                 $tmp = $instance;
                 unset($tmp['title']);
-                unset($tmp['custom']); //we don't need the title nor the names of the actual custom fields.                
+                unset($tmp['custom']); //we don't need the title nor the names of the actual custom fields.
                 $tmp = array_keys($tmp);
 
                 //Remove fields from the $tmp that don't exist
@@ -584,7 +584,7 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                     if(!in_array($name, $fields)){
                         unset($tmp[$k]);
                     }
-                }                
+                }
 
                 //Check if each available field is in the $tmp
                 //if not - add the missing fields to the end of the array
@@ -603,7 +603,7 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                     $output .= '<li><input type="checkbox" name="' . $this->get_field_name($name) . '" id="' . $this->get_field_id($name) . '"' . $checked . '/> ' . $name . '</li>';
                 }
                 $output .= '</ul>';
-                if($custom){                    
+                if($custom){
 
                     $output .= '<p style="border-bottom: 1px solid #dfdfdf; padding: 10px 0;"><strong>Custom fields:</strong><br/>';
 
@@ -633,7 +633,7 @@ function flexIDXHS_js(){
     global $flexidxhs_opt;
 
     $js_search = _js_search();
-    $js_advsearch = _js_advsearch();    
+    $js_advsearch = _js_advsearch();
     $city = _flex_field_name('city');
     $property_type = _flex_field_name('property-type');
 
@@ -646,7 +646,7 @@ function searchnow(form_id) {
     var fid = '#' + form_id;
     var base_url = quick_search_base_url;
     if(jQuery(fid + ' .flexidxhs_custom_field').val()){
-        var url = jQuery(fid + ' .flexidxhs_custom_field').val();        
+        var url = jQuery(fid + ' .flexidxhs_custom_field').val();
         if(url != ''){
             base_url = url;
         }else{
@@ -745,9 +745,9 @@ function flexIDXHS_QuickSearch_HTML($fields_array = false){
     }else{
         $class_on = 'class="advanced-search-off"';
     }
-    
+
     $rand = rand(1, 999);
-    $output .= "<div class='flexIDXHS_QuickSearch'>";			
+    $output .= "<div class='flexIDXHS_QuickSearch'>";
     $output .= "<div class='flexIDXHS_QuickSearch_form' id='formid_{$rand}'>";
     $output .= flexIDXHS_QuickSearch_form($fields_array);
     $output .= '<div clear="all" '.$class_on.'>';
@@ -772,10 +772,10 @@ function flexIDXHS_baths(){
     $baths = array(1=>'1+', 2=>'2+', 3=>'3+', 4=>'4+', 5=>'5+', 6=>'6+');
     return $baths;
 }
-function flexIDXHS_price_min(){    
+function flexIDXHS_price_min(){
     $price_min = array(
 		0 => 'No Min Price', 50000 => '$50,000', 100000 => '$100,000', 150000 => '$150,000', 200000 => '$200,000', 250000 => '$250,000', 300000 => '$300,000', 350000 => '$350,000', 400000 => '$400,000', 450000 => '$450,000', 500000 => '$500,000', 550000 => '$550,000', 600000 => '$600,000', 650000 => '$650,000', 700000 => '$700,000', 750000 => '$750,000', 800000 => '$800,000', 850000 => '$850,000', 900000 => '$900,000', 950000 => '$950,000', 1000000 => '$1,000,000', 1250000 => '$1,250,000', 1500000 => '$1,500,000', 1750000 => '$1,750,000', 2000000 => '$2,000,000', 2500000 => '$2,500,000', 3000000 => '$3,000,000',
-	);    
+	);
     return $price_min;
 }
 function flexIDXHS_price_max(){
@@ -826,7 +826,7 @@ function flexIDXHS_price_range(){
 
 function flexIDXHS_QuickSearch_form($fields_array = false){
     global $flexidxhs_opt;
-    $opt = $flexidxhs_opt;    
+    $opt = $flexidxhs_opt;
 
     if(is_array($opt['custom-searches'])){
         $custom_search_names = array_keys($opt['custom-searches']);
@@ -836,10 +836,10 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
         $query_properties = flexIDXHS_prepare_fields_array();
     }else{
         $query_properties = $fields_array;
-    }    
+    }
 
 	foreach($query_properties as $name => $properties){
-            
+
                 /*
                  * Checking Fields label Visibility Settings
                  */
@@ -847,15 +847,15 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
 
                     if($opt['label-visibility'] == 'outside'){
                         $output .= '<label class="label_'. str_replace(' ', '', strtolower($name)) .'"><span>'. $properties['label'] .'</span>'; $close_label = '</label>';
-                    
+
                     }elseif($opt['label-visibility'] == 'inside'){
                         $inside_label .= "\t" . '<option value="">'. $properties['label'] .'</option>' . "\n";
-                    
+
                     }
                     unset($properties['label']);
-                    
+
                 }
-                
+
                 if($name == 'City'){
                     foreach($properties as $k => $v){
                         //check if the key is a string, which meants it's a custom value, otherwise the value and the option label are the same.
@@ -867,7 +867,7 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
                     }
                     unset($properties);
                     $properties = $_cities;
-                }		
+                }
 
 
 
@@ -1078,41 +1078,41 @@ function _idx_js_search($content){
         if( !isset($flexidxhs_opt['iframe']) || 0 ==  $flexidxhs_opt['iframe'] )
                 return $content;
 
-        $output = "     
-        var wrapper_link = '". get_permalink( $flexidxhs_opt['iframe'] ) . "';        
+        $output = "
+        var wrapper_link = '". get_permalink( $flexidxhs_opt['iframe'] ) . "';
         popupWin = window.open(wrapper_link + '?idxurl=' + search_link, '_self');
         ";
         return $output;
 }
-function _idx_js_advsearch($content){ 
+function _idx_js_advsearch($content){
         global $flexidxhs_opt;
 
         if( !isset($flexidxhs_opt['iframe']) || 0 ==  $flexidxhs_opt['iframe'] )
                 return $content;
 
-        $output = "     
-        var wrapper_link = '". get_permalink( $flexidxhs_opt['iframe'] ) . "';     
+        $output = "
+        var wrapper_link = '". get_permalink( $flexidxhs_opt['iframe'] ) . "';
         popupWin = window.open(wrapper_link + '?idxurl=' + quick_search_base_url, '_self');
         ";
         return $output;
 }
 function _insert_idx_iframe($content){
         global $flexidxhs_opt;
-        
-        if( isset($_GET['idxurl']) ){
-                $atts['url'] = $_GET['idxurl'];        
+
+        if( isset($_GET['idxurl']) && stristr($_GET['idxurl'], 'http://link.flexmls.com') ){
+            $atts['url'] = esc_attr( str_replace('idxurl=', '', $_SERVER['QUERY_STRING']) );
         }else{
-                //just insert the default search iframe
-                $atts['url'] = $flexidxhs_opt['idx-url'];
+            //just insert the default search iframe
+            $atts['url'] = $flexidxhs_opt['idx-url'];
         }
-        
+
         return $content . flexIDX_iframe_shortcode($atts);
 }
 function _check_idx_iframe_page(){
         global $flexidxhs_opt;
 
         if( isset($flexidxhs_opt['iframe']) && 0 !=  $flexidxhs_opt['iframe'] && is_page($flexidxhs_opt['iframe']) )
-                add_filter('the_content', '_insert_idx_iframe', 10);        
+                add_filter('the_content', '_insert_idx_iframe', 10);
 
 }
 
