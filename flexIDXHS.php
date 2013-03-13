@@ -4,7 +4,7 @@ Plugin Name: flexIDX Home Search
 Plugin URI: http://www.phoenixhomes.com/tech/flexidx-home-search
 Description: flexIDX/flexMLS customers only:Provides flexible Home Search widget for your sidebars as well as ability to generate custom search links and iframes that can be embedded into post and page content.
 Author: Max Chirkov
-Version: 2.1.1
+Version: 2.1.2
 Author URI: http://www.PhoenixHomes.com
 */
 
@@ -14,6 +14,12 @@ define("FLEXIDXHS_URL", WP_PLUGIN_URL . '/' . FLEXIDXHS_BASENAME);
 define("FLEXIDXHS_LIB", FLEXIDXHS_DIR . '/lib');
 
 include 'options/options.php';
+if( class_exists('flexIDXHS_Admin'))
+{
+    $flexidxAdmin = new flexIDXHS_Admin();
+    register_activation_hook( __FILE__, array(&$flexidxAdmin, 'plugin_activate') );
+}
+
 $flexidxhs_opt = get_option('flexidxhs');
 include_once ("tinymce/tinymce.php");
 
@@ -25,29 +31,47 @@ class flexIDXHS_QuickSearch extends WP_Widget {
 		$this->WP_Widget('flexIDXHS_QuickSearch', __('flexIDX Quick Search'), $widget_ops, $control_ops);
 	}
 
+
 	function widget( $args, $instance ) {
-            global $flexidxhs_opt;
-            $opt = $flexidxhs_opt;
-		extract($args);
-                $before_title   = $before_title .  html_entity_decode($opt['widget-markup']['before-title']);
-                $after_title    = html_entity_decode($opt['widget-markup']['after-title']) . $after_title;
-                $_before_widget  = html_entity_decode($opt['widget-markup']['before-widget']);
-                $_after_widget   = html_entity_decode($opt['widget-markup']['after-widget']);
-		$title = apply_filters('flexIDXHS_QuickSearch', empty($instance['title']) ? '' : $instance['title']);
-		if ( !empty( $title ) ) { $title = $before_title . $title . $after_title; }
+        global $flexidxhs_opt;
+        $opt = $flexidxhs_opt;
+
+        extract($args);
+
+        $before_title = isset($opt['widget-markup']['before-title']) ? $before_title .  html_entity_decode($opt['widget-markup']['before-title']) : $before_title;
+        $after_title = isset($opt['widget-markup']['after-title']) ? html_entity_decode($opt['widget-markup']['after-title']) . $after_title : $after_title;
+        $_before_widget = isset($opt['widget-markup']['before-widget']) ? html_entity_decode($opt['widget-markup']['before-widget']) : '';
+        $_after_widget = isset($opt['widget-markup']['after-widget']) ? html_entity_decode($opt['widget-markup']['after-widget']) : '';
+
+        $title = apply_filters('flexIDXHS_QuickSearch', empty($instance['title']) ? '' : $instance['title']);
+
+        if ( !empty( $title ) ) { $title = $before_title . $title . $after_title; }
 			$output = $before_widget;
 			$output .= $title;
 			$output .= $_before_widget . flexIDXHS_QuickSearch_HTML() . $_after_widget;
 			$output .= $after_widget;
 
-                $action  = $instance['action'];
+        if( class_exists('advanced_text') )
+        {
+            if( isset($instance['return']) && $instance['return'] == true)
+                return $output;
+            else
+                echo $output;
+
+            return;
+        }
+
+        if( !isset($instance['return']) )
+            $instance['return'] = false;
+
+        $action  = $instance['action'];
 		$show 	 = $instance['show'];
 		$slug 	 = $instance['slug'];
 
                 if($action == "1"){
 			switch ($show) {
 				case "all":
-					if($instance['return'] == true){
+					if( isset($instance['return']) && $instance['return'] == true){
                                                 return $output;
                                         }else{
                                                 echo $output;
@@ -223,49 +247,59 @@ class flexIDXHS_QuickSearch extends WP_Widget {
 		$title = strip_tags($instance['title']);
 
                  $allSelected = $homeSelected = $postSelected = $postInCategorySelected = $pageSelected = $categorySelected = $blogSelected = false;
-		switch ($instance['action']) {
-			case "1":
-			$showSelected = true;
-			break;
-			case "0":
-			$dontshowSelected = true;
-			break;
-		}
-		switch ($instance['show']) {
-			case "all":
-			$allSelected = true;
-			break;
-			case "":
-			$allSelected = true;
-			break;
-			case "home":
-			$homeSelected = true;
-			break;
-			case "post":
-			$postSelected = true;
-			break;
-			case "post_in_category":
-			$postInCategorySelected = true;
-			break;
-			case "page":
-			$pageSelected = true;
-			break;
-			case "category":
-			$categorySelected = true;
-			break;
-			case "blog": //Max' Custom Addition
-			$blogSelected = true;
-			break;
-		}
+		if( isset($instance['action']) )
+        {
+            switch ($instance['action']) {
+                case "1":
+                $showSelected = true;
+                break;
+                case "0":
+                $dontshowSelected = true;
+                break;
+            }
+        }
+
+        if ( isset($instance['show']) ) {
+    		switch ($instance['show']) {
+    			case "all":
+    			$allSelected = true;
+    			break;
+    			case "":
+    			$allSelected = true;
+    			break;
+    			case "home":
+    			$homeSelected = true;
+    			break;
+    			case "post":
+    			$postSelected = true;
+    			break;
+    			case "post_in_category":
+    			$postInCategorySelected = true;
+    			break;
+    			case "page":
+    			$pageSelected = true;
+    			break;
+    			case "category":
+    			$categorySelected = true;
+    			break;
+    			case "blog": //Max' Custom Addition
+    			$blogSelected = true;
+    			break;
+    		}
+        }
 ?>
 		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label>
 		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>
+                <?php
+                if( !class_exists('advanced_text') ):
+                ?>
                 <div><label>On which pages to display this widget:</label><br />
                     <label for="<?php echo $this->get_field_id('action'); ?>"  title="Show only on specified page(s)/post(s)/category. Default is All" style="line-height:35px;"><select name="<?php echo $this->get_field_name('action'); ?>"><option value="1" <?php if ($showSelected){echo "selected";} ?>>Show</option><option value="0" <?php if ($dontshowSelected){echo "selected";} ?>>Do NOT show</option></select> only on: <select name="<?php echo $this->get_field_name('show'); ?>" id="<?php echo $this->get_field_id('show'); ?>"><option label="All" value="all" <?php if ($allSelected){echo "selected";} ?>>All</option><option label="Home" value="home" <?php if ($homeSelected){echo "selected";} ?>>Home</option><option label="Post" value="post" <?php if ($postSelected){echo "selected";} ?>>Post(s)</option><option label="Post in Category ID(s)" value="post_in_category" <?php if ($postInCategorySelected){echo "selected";} ?>>Post In Category ID(s)</option><option label="Page" value="page" <?php if ($pageSelected){echo "selected";} ?>>Page(s)</option><option label="Category" value="category" <?php if ($categorySelected){echo "selected";} ?>>Category</option><option label="Blog" value="blog" <?php if ($blogSelected){echo "selected";} ?>>Blog Main Page, Posts and Archives</option></select></label><br />
                     <label for="<?php echo $this->get_field_id('slug'); ?>"  title="Optional limitation to specific page, post or category. Use ID, slug or title.">Slug/Title/ID: <input type="text" style="width: 250px;" id="<?php echo $this->get_field_id('slug'); ?>" name="<?php echo $this->get_field_name('slug'); ?>" value="<?php echo htmlspecialchars($instance['slug']); ?>" /></label><br />
                     <?php if ($postInCategorySelected) echo "<p>In <strong>Post In Category</strong> add one or more cat. IDs (not Slug or Title) comma separated!</p>";?>
                 </div>
 <?php
+                endif;
 	}
 }
 
@@ -278,13 +312,15 @@ class flexIDXHS_CustomSearch extends WP_Widget {
 	}
 
 	function widget( $args, $instance ) {
-            global $flexidxhs_opt;
-            $opt = $flexidxhs_opt;
-		extract($args);
-                $before_title   = $before_title .  html_entity_decode($opt['widget-markup']['before-title']);
-                $after_title    = html_entity_decode($opt['widget-markup']['after-title']) . $after_title;
-                $_before_widget  = html_entity_decode($opt['widget-markup']['before-widget']);
-                $_after_widget   = html_entity_decode($opt['widget-markup']['after-widget']);
+        global $flexidxhs_opt;
+        $opt = $flexidxhs_opt;
+
+        extract($args);
+
+        $before_title = isset($opt['widget-markup']['before-title']) ? $before_title .  html_entity_decode($opt['widget-markup']['before-title']) : $before_title;
+        $after_title = isset($opt['widget-markup']['after-title']) ? html_entity_decode($opt['widget-markup']['after-title']) . $after_title : $after_title;
+        $_before_widget = isset($opt['widget-markup']['before-widget']) ? html_entity_decode($opt['widget-markup']['before-widget']) : '';
+        $_after_widget = isset($opt['widget-markup']['after-widget']) ? html_entity_decode($opt['widget-markup']['after-widget']) : '';
 		$title = apply_filters('flexIDXHS_CustomSearch', empty($instance['title']) ? '' : $instance['title']);
 
                 $action  = $instance['action'];
@@ -309,10 +345,16 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                         $tmp[$k] = $v;
                     }
                 }
+
                 $field_names = $tmp;
+
                 foreach($field_names as $name){
-                    $fields[$name] = $fields_array[$name];
+                    if ( isset($fields_array[$name]) )
+                        $fields[$name] = $fields_array[$name];
                 }
+
+                if ( !isset($fields) )
+                    return;
 
 		if ( !empty( $title ) ) { $title = $before_title . $title . $after_title; }
 			$output = $before_widget;
@@ -320,7 +362,20 @@ class flexIDXHS_CustomSearch extends WP_Widget {
 			$output .= $_before_widget . flexIDXHS_QuickSearch_HTML($fields) . $_after_widget;
 			$output .= $after_widget;
 
-                    if($action == "1"){
+        if( class_exists('advanced_text') )
+        {
+            if( isset($instance['return']) && $instance['return'] == true)
+                return $output;
+            else
+                echo $output;
+
+            return;
+        }
+
+        if( !isset($instance['return']) )
+            $instance['return'] = false;
+
+        if($action == "1"){
 			switch ($show) {
 				case "all":
 					if($instance['return'] == true){
@@ -484,7 +539,6 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                                         }
                         }
                     }
-
 	}
 
 	function update( $new_instance, $old_instance ) {
@@ -504,41 +558,47 @@ class flexIDXHS_CustomSearch extends WP_Widget {
 		$instance = wp_parse_args( (array) $instance, array( 'title' => 'Home Search' ) );
 		$title = strip_tags($instance['title']);
 
-                $allSelected = $homeSelected = $postSelected = $postInCategorySelected = $pageSelected = $categorySelected = $blogSelected = false;
-		switch ($instance['action']) {
-			case "1":
-			$showSelected = true;
-			break;
-			case "0":
-			$dontshowSelected = true;
-			break;
-		}
-		switch ($instance['show']) {
-			case "all":
-			$allSelected = true;
-			break;
-			case "":
-			$allSelected = true;
-			break;
-			case "home":
-			$homeSelected = true;
-			break;
-			case "post":
-			$postSelected = true;
-			break;
-			case "post_in_category":
-			$postInCategorySelected = true;
-			break;
-			case "page":
-			$pageSelected = true;
-			break;
-			case "category":
-			$categorySelected = true;
-			break;
-			case "blog": //Max' Custom Addition
-			$blogSelected = true;
-			break;
-		}
+        $allSelected = $homeSelected = $postSelected = $postInCategorySelected = $pageSelected = $categorySelected = $blogSelected = false;
+
+        if ( isset($instance['action']) ) {
+            switch ($instance['action']) {
+                case "1":
+                $showSelected = true;
+                break;
+                case "0":
+                $dontshowSelected = true;
+                break;
+            }
+        }
+
+        if ( isset($instance['show']) ) {
+    		switch ($instance['show']) {
+    			case "all":
+    			$allSelected = true;
+    			break;
+    			case "":
+    			$allSelected = true;
+    			break;
+    			case "home":
+    			$homeSelected = true;
+    			break;
+    			case "post":
+    			$postSelected = true;
+    			break;
+    			case "post_in_category":
+    			$postInCategorySelected = true;
+    			break;
+    			case "page":
+    			$pageSelected = true;
+    			break;
+    			case "category":
+    			$categorySelected = true;
+    			break;
+    			case "blog": //Max' Custom Addition
+    			$blogSelected = true;
+    			break;
+    		}
+        }
 ?>
                 <script type="text/javascript">
                 jQuery(document).ready(function(){
@@ -553,7 +613,7 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                 $field_names = array_keys($fields_array);
 
                 $custom = false;
-                if(is_array($opt['custom-searches']) && !empty($opt['custom-searches'])){
+                if(isset($opt['custom-searches']) && !empty($opt['custom-searches'])){
                     $custom = true;
                     $custom_fields = array_keys($opt['custom-searches']);
 
@@ -566,7 +626,7 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                 }
 
                 //Merge field_names and array('custom_field') so they can be ordered
-                if($custom_fields){
+                if( isset($custom_fields) ){
                     $fields = array_merge($field_names, array('Custom Field'));
                 }else{
                     $fields = $field_names;
@@ -597,7 +657,7 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                 $output = '<ul id="flexIDXHS-widget-' . $this->number . '" style="border-bottom: 1px solid #dfdfdf; padding-bottom: 10px;">';
                 foreach($tmp as $name){
                     $checked = false;
-                    if($instance[$name]){
+                    if( isset($instance[$name]) ){
                         $checked = " checked";
                     }
                     $output .= '<li><input type="checkbox" name="' . $this->get_field_name($name) . '" id="' . $this->get_field_id($name) . '"' . $checked . '/> ' . $name . '</li>';
@@ -618,6 +678,8 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                 }
 
                 echo $output;
+
+                if( !class_exists('advanced_text') ):
                 ?>
                 <div><label>On which pages to display this widget:</label><br />
                     <label for="<?php echo $this->get_field_id('action'); ?>"  title="Show only on specified page(s)/post(s)/category. Default is All" style="line-height:35px;"><select name="<?php echo $this->get_field_name('action'); ?>"><option value="1" <?php if ($showSelected){echo "selected";} ?>>Show</option><option value="0" <?php if ($dontshowSelected){echo "selected";} ?>>Do NOT show</option></select> only on: <select name="<?php echo $this->get_field_name('show'); ?>" id="<?php echo $this->get_field_id('show'); ?>"><option label="All" value="all" <?php if ($allSelected){echo "selected";} ?>>All</option><option label="Home" value="home" <?php if ($homeSelected){echo "selected";} ?>>Home</option><option label="Post" value="post" <?php if ($postSelected){echo "selected";} ?>>Post(s)</option><option label="Post in Category ID(s)" value="post_in_category" <?php if ($postInCategorySelected){echo "selected";} ?>>Post In Category ID(s)</option><option label="Page" value="page" <?php if ($pageSelected){echo "selected";} ?>>Page(s)</option><option label="Category" value="category" <?php if ($categorySelected){echo "selected";} ?>>Category</option><option label="Blog" value="blog" <?php if ($blogSelected){echo "selected";} ?>>Blog Main Page, Posts and Archives</option></select></label><br />
@@ -625,6 +687,7 @@ class flexIDXHS_CustomSearch extends WP_Widget {
                     <?php if ($postInCategorySelected) echo "<p>In <strong>Post In Category</strong> add one or more cat. IDs (not Slug or Title) comma separated!</p>";?>
                 </div>
                 <?php
+                endif;
 	}
 }
 
@@ -728,18 +791,19 @@ function _js_advsearch(){
 function flexIDXHS_QuickSearch_HTML($fields_array = false){
     global $flexidxhs_opt;
 
-    if($flexidxhs_opt['search-buttons']['search-label'] && !empty($flexidxhs_opt['search-buttons']['search-label'])){
+    if( isset($flexidxhs_opt['search-buttons']['search-label']) && !empty($flexidxhs_opt['search-buttons']['search-label'])){
         $search_label = $flexidxhs_opt['search-buttons']['search-label'];
     }else{
         $search_label = 'Search Now';
     }
-    if($flexidxhs_opt['search-buttons']['advanced-search-label'] && !empty($flexidxhs_opt['search-buttons']['advanced-search-label'])){
+    if( isset($flexidxhs_opt['search-buttons']['advanced-search-label']) && !empty($flexidxhs_opt['search-buttons']['advanced-search-label'])){
         $adv_search_label = $flexidxhs_opt['search-buttons']['advanced-search-label'];
     }else{
         $adv_search_label = 'Advanced Search';
     }
 
-    if($flexidxhs_opt['search-buttons']['display-advanced-search']){
+    $advanced_search = false;
+    if( isset($flexidxhs_opt['search-buttons']['display-advanced-search']) ){
         $class_on = 'class="advanced-search-on"';
         $advanced_search = '<input type="button" name="AdvancedSearch" class="AdvancedSearch" value="'.$adv_search_label.'" onclick="advsearch();" />';
     }else{
@@ -747,7 +811,7 @@ function flexIDXHS_QuickSearch_HTML($fields_array = false){
     }
 
     $rand = rand(1, 999);
-    $output .= "<div class='flexIDXHS_QuickSearch'>";
+    $output = "<div class='flexIDXHS_QuickSearch'>";
     $output .= "<div class='flexIDXHS_QuickSearch_form' id='formid_{$rand}'>";
     $output .= flexIDXHS_QuickSearch_form($fields_array);
     $output .= '<div clear="all" '.$class_on.'>';
@@ -828,7 +892,7 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
     global $flexidxhs_opt;
     $opt = $flexidxhs_opt;
 
-    if(is_array($opt['custom-searches'])){
+    if( isset($opt['custom-searches']) && is_array($opt['custom-searches']) ){
         $custom_search_names = array_keys($opt['custom-searches']);
     }
 
@@ -838,11 +902,14 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
         $query_properties = $fields_array;
     }
 
+    $output = false;
 	foreach($query_properties as $name => $properties){
 
                 /*
                  * Checking Fields label Visibility Settings
                  */
+                $inside_label = false;
+                $close_label = false;
                 if($properties['label']){
 
                     if($opt['label-visibility'] == 'outside'){
@@ -871,7 +938,7 @@ function flexIDXHS_QuickSearch_form($fields_array = false){
 
 
 
-                if($custom_search_names && in_array($name, $custom_search_names)){
+                if( isset($custom_search_names) && in_array($name, $custom_search_names)){
                     $id = 'flexidxhs_custom_field';
                 }else{
                     $id = str_replace(' ', '_', strtolower($name));
@@ -999,7 +1066,7 @@ function flexIDXHS_prepare_fields_array($include_custom_fields = false){
             );
        }
 
-       if ( $include_custom_fields && is_array($opt['custom-searches']) ) {
+       if ( $include_custom_fields && isset($opt['custom-searches']) && is_array($opt['custom-searches']) ) {
             $query_properties = array_merge($query_properties, $opt['custom-searches']);
        }
 
@@ -1008,7 +1075,7 @@ function flexIDXHS_prepare_fields_array($include_custom_fields = false){
 
 
 function flexIDXHS_admin_scripts(){
-    if (isset($_GET['page']) && strstr($_GET['page'], 'flexIDX_options') || strstr($_GET['page'], 'flexIDX_options')){
+    if (isset($_GET['page']) && ( strstr($_GET['page'], 'flexIDX_options') || strstr($_GET['page'], 'flexIDX_options')) ){
 		wp_enqueue_script('postbox');
 		wp_enqueue_script('dashboard');
 		wp_enqueue_style('dashboard');
@@ -1031,7 +1098,7 @@ function flexIDXHS_styles(){
     }
 }
 
-if($flexidxhs_opt['idx-url']){
+if( isset($flexidxhs_opt['idx-url']) ){
     add_action('init', 'flexIDXHS_scripts');
     add_action('wp_head', 'flexIDXHS_styles');
     add_action('widgets_init', create_function('', 'return register_widget("flexIDXHS_QuickSearch");'));

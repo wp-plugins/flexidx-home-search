@@ -14,14 +14,14 @@
 
 if(!class_exists('Plugin_Admin_Class')){
 	class Plugin_Admin_Class {
-	
+
 		var $hook 		= '';
 		var $filename		= '';
 		var $longname		= '';
 		var $shortname		= '';
 		var $ozhicon		= '';
 		var $optionname		= '';
-		var $accesslevel	= 'manage_options';		
+		var $accesslevel	= 'manage_options';
 		var $prefix			= '';
 		var $submenu_pages	= array(); //key - function; value - page title;
                 var $autotable          = true;
@@ -34,9 +34,9 @@ if(!class_exists('Plugin_Admin_Class')){
                     'sponsored_by'  => '<a href="http://www.phoenixhomes.com">PhoenixHomes.com</a>',
                     'forums_url'    => 'http://wordpress.org/tags/flexidx-home-search?forum_id=10',
                 );
-		
-		function Plugin_Admin_Class() {
-                    register_activation_hook( __FILE__, $this->plugin_activate());
+
+		function __construct() {
+                    //register_activation_hook( __FILE__, array(&$this, 'plugin_activate') );
                     add_action('admin_init', array(&$this,'options_init'));
                     if(!empty($this->submenu_pages)){
                             add_action('admin_menu', array(&$this, 'register_menu'));
@@ -60,18 +60,18 @@ if(!class_exists('Plugin_Admin_Class')){
 
                         if(is_array($settings)){
                             foreach($settings as $field){
-                                $default = null;
+                                $default = false;
                                 if(in_array($field['type'], array('text', 'textarea', 'select'))){
-                                    if($field['default']){
+                                    if( isset($field['default']) ){
                                         $default = $field['default'];
                                     }
-                                }elseif($field['type'] == 'checkbox'){
-                                    if($field['attr']['checked']){
-                                        if(!$default = $field['default']){
+                                }elseif( isset($field['type']) && $field['type'] == 'checkbox'){
+                                    if( isset($field['attr']['checked']) ){
+                                        if( isset($field['default']) ){
                                            $default = true;
                                         }
                                     }
-                                }elseif($field['attr']['checked'] && $field['default']){
+                                }elseif( isset($field['attr']['checked']) && $field['default']){
                                     $default = $field['default'];
                                 }
 
@@ -89,16 +89,16 @@ if(!class_exists('Plugin_Admin_Class')){
                         $this->options = get_option($this->optionname);
                     }
                 }
-		
+
 		function add_ozh_adminmenu_icon( $hook ) {
-			if ($hook == $this->hook) 
+			if ($hook == $this->hook)
 				return WP_CONTENT_URL . '/plugins/' . plugin_basename(dirname($filename)). '/'.$this->ozhicon;
 			return $hook;
 		}
-		
+
 		/**
 		 * Config Page Scripts
-		 */		
+		 */
 		function config_page_styles() {
 			if (isset($_GET['page']) && ($_GET['page'] == $this->filename || $_GET['page'] == $this->hook)) {
 				wp_enqueue_style('dashboard');
@@ -107,8 +107,8 @@ if(!class_exists('Plugin_Admin_Class')){
 				wp_enqueue_style('wp-admin');
 				wp_enqueue_style('blogicons-admin-css', WP_CONTENT_URL . '/plugins/' . plugin_basename(dirname(__FILE__)). '/wp_plugin_admin.css');
 			}
-		}		
-		
+		}
+
 		function config_page_scripts() {
 			if (isset($_GET['page']) && ($_GET['page'] == $this->filename || $_GET['page'] == $this->hook)) {
                             wp_enqueue_script('jquery');
@@ -119,14 +119,14 @@ if(!class_exists('Plugin_Admin_Class')){
                             wp_enqueue_script('postbox');
                             wp_enqueue_script('dashboard');
                             wp_enqueue_script('thickbox');
-                            wp_enqueue_script('media-upload');                            
+                            wp_enqueue_script('media-upload');
 			}
 		}
 
                 function admin_head(){
                     //this condition is important, otherwise, if loads on other pages - breaks collapsible sidebar navigation.
                     if (isset($_GET['page']) && ($_GET['page'] == $this->filename || $_GET['page'] == $this->hook)) {
-                        echo '<script type="text/javascript" src="../wp-includes/js/jquery/ui.sortable.js"></script>';
+                        //echo '<script type="text/javascript" src="../wp-includes/js/jquery/ui.sortable.js"></script>';
                         echo '<link type="text/css" href="http://jquery-ui.googlecode.com/svn/tags/latest/themes/base/jquery.ui.all.css" rel="stylesheet" />';
                         echo '
                             <script type="text/javascript">
@@ -143,11 +143,11 @@ if(!class_exists('Plugin_Admin_Class')){
 		function register_settings_page() {
 			add_options_page($this->longname, $this->shortname, $this->accesslevel, $this->hook, array(&$this,'config_page'));
 		}
-		
+
 		function plugin_options_url() {
 			return admin_url( 'options-general.php?page='.$this->hook );
 		}
-		
+
 		/**
 		 * Add a link to the settings page to the plugins list
 		 */
@@ -160,40 +160,40 @@ if(!class_exists('Plugin_Admin_Class')){
 			}
 			return $links;
 		}
-		
+
 		/**
 		 * Register Menu
 		 */
-		function options_init(){                    
+		function options_init(){
                     register_setting($this->optionname . '-option-group', $this->optionname, array(&$this, 'validate_input'));
 		}
-		 
-		function register_menu(){                    
+
+		function register_menu(){
 			add_menu_page($this->longname, $this->shortname, 8, $this->filename, array(&$this,'show_menu'));
-			foreach($this->submenu_pages as $submenu_slug => $submenu_title){				
+			foreach($this->submenu_pages as $submenu_slug => $submenu_title){
 				add_submenu_page($this->filename, $submenu_title, $submenu_title, 8, $submenu_slug, array(&$this,'show_menu'));
 			}
-		}			
-		
+		}
+
 		function show_menu(){
-			$submenu_slugs = array_keys($this->submenu_pages);			
-			if($_GET['page'] && in_array($_GET['page'], $submenu_slugs)){			
+			$submenu_slugs = array_keys($this->submenu_pages);
+			if($_GET['page'] && in_array($_GET['page'], $submenu_slugs)){
 				//submenu slug contains prefix, but submenu files don't, so remove prefix
-				$submenu_file_name = str_replace($this->prefix, '', $_GET['page']) . '.php';								
-				$submenu_file_path = dirname (__FILE__) . '/' . $submenu_file_name;				
+				$submenu_file_name = str_replace($this->prefix, '', $_GET['page']) . '.php';
+				$submenu_file_path = dirname (__FILE__) . '/' . $submenu_file_name;
 				//options funtion should be $submenu_slug + _options_page()
 				$func = $_GET['page'] . '_options_page';
 				if(function_exists($func)){
 					call_user_func($func);
 				}elseif(file_exists($submenu_file_path)){
-					include_once ($submenu_file_path);					
+					include_once ($submenu_file_path);
 					call_user_func($func);
 				}
 			}else{
 				$this->config_page();
 			}
-				
-		}                
+
+		}
 
 		/*
                  * Applies input_callback functions form the settings array as well as encodes html entitites for strings.
@@ -206,26 +206,26 @@ if(!class_exists('Plugin_Admin_Class')){
                         if(is_array($fields)){
                             foreach($fields as $k2 => $field){
                                 foreach($settings as $item){
-                                    if($item['id'] == array($k1, $k2) && $item['input_callback']){
+                                    if( isset($item['id']) && $item['id'] == array($k1, $k2) && isset($item['input_callback']) ){
                                         if(is_array( $input[$k1][$k2])){
                                             $input[$k1][$k2] = call_user_func_array($item['input_callback'], $input[$k1][$k2]);
-                                        }else{
+                                        }elseif( isset($item['input_callback']) ){
                                             $input[$k1][$k2] = call_user_func($item['input_callback'], htmlentities($input[$k1][$k2], ENT_QUOTES));
                                         }
-                                    }elseif($item['id'] == array($k1, $k2)){
+                                    }elseif( isset($item['id']) && $item['id'] == array($k1, $k2)){
                                         $input[$k1][$k2] = htmlentities($input[$k1][$k2], ENT_QUOTES);
                                     }
                                 }
                             }
                         }else{
                             foreach($settings as $item){
-                                if($item['id'] == $k1 && $item['input_callback']){
+                                if( isset($item['id']) && $item['id'] == $k1 &&  isset($item['input_callback']) ){
                                     if(is_array($input[$k1])){
                                         $input[$k1] = call_user_func_array($item['input_callback'], $input[$k1]);
-                                    }else{
+                                    }elseif( isset($item['input_callback']) ){
                                         $input[$k1] = call_user_func($item['input_callback'], htmlentities($input[$k1], ENT_QUOTES));
                                     }
-                                }elseif($item['id'] == $k1){
+                                }elseif( isset($item['id']) && $item['id'] == $k1){
                                     $input[$k1] = htmlentities($input[$k1], ENT_QUOTES);
                                 }
                             }
@@ -253,7 +253,7 @@ if(!class_exists('Plugin_Admin_Class')){
 			$options = $this->options;
 			return '<input type="checkbox" id="'.$id.'" name="'.$id.'"'. checked($options[$id],true,false).'/> <label for="'.$id.'">'.$label.'</label><br/>';
 		}
-		
+
 		/**
 		 * Create a Text input field
 		 */
@@ -261,7 +261,7 @@ if(!class_exists('Plugin_Admin_Class')){
 			$options = $this->options;
 			return '<label for="'.$id.'">'.$label.':</label><br/><input size="45" type="text" id="'.$id.'" name="'.$id.'" value="'.$options[$id].'"/><br/><br/>';
 		}
-		
+
                 /**
                  * Creates a name for a form field which is in a form of an array optiongroup[option]
                  * @param string $option_id
@@ -270,6 +270,7 @@ if(!class_exists('Plugin_Admin_Class')){
                 //TODO: Change option_id to field_params
                 function _name($field_params){
                     //$parts = explode('###', str_replace(']', '', str_replace('[', '###', $field_params['id'])));
+                    $output = '';
                     if(is_string($field_params['id']))
                         $field_params['id'] = array($field_params['id']);
 
@@ -295,12 +296,15 @@ if(!class_exists('Plugin_Admin_Class')){
                  * Creates an id for a form field reflecting option's hierarchy with hyphans
                  * @param string $option_id
                  * @return string
-                 */                
+                 */
                 function _id($field_params){
+                    if( !isset($field_params['id']) )
+                        return;
+
                     //$output = str_replace(']', '', str_replace('[', '-', $field_params['id']));
-                    if(!is_array($field_params['id']))
+                    if( !is_array($field_params['id']) )
                         return $field_params['id'];
-                                        
+
                     return implode('-', $field_params['id']);
                 }
                 /**
@@ -312,44 +316,50 @@ if(!class_exists('Plugin_Admin_Class')){
                     $options = $this->options;
                     if(!$options)
                         return;
-                    
+
                     //$parts = explode('###', str_replace(']', '', str_replace('[', '###', $field_params['id'])));
-                    if(!is_array($field_params['id']) && is_string($field_params['id'])){
-                        $val = $options[$field_params['id']];                        
-                        if($field_params['output_callback']){
+                    if( isset($field_params['id']) && is_string($field_params['id'])){
+                        $val = isset($options[$field_params['id']]) ? $options[$field_params['id']] : false;
+
+                        if( isset($field_params['output_callback']) )
                             $val = call_user_func($field_params['output_callback'], $val);
-                        }
+
                         //pa($val);
                         return $val;
-                    }elseif(is_array($field_params['id'])){                        
-                        $val = $options[$field_params['id'][0]][$field_params['id'][1]];
-                        if($field_params['output_callback']){
+                    }elseif(is_array($field_params['id'])){
+                        $val = isset($options[$field_params['id'][0]][$field_params['id'][1]]) ? $options[$field_params['id'][0]][$field_params['id'][1]] : false;
+
+                        if( isset($field_params['output_callback']) )
                             $val = call_user_func($field_params['output_callback'], $val);
-                        }
+
                         return $val;
-                    }                                                                             
+                    }
                 }
 
-                function _label($field_params){                    
+
+                function _label($field_params){
                     if(!empty($field_params['label'])){
                         return '<label for="' . $this->_id($field_params['id']) . '">' . $field_params['label'] . ':</label>' . "\n";
                     }else{
                         return '';
                     }
                 }
-		/**
-                 * Parces array of field parameters and their options and reterns a string or an array
-                 * of complete input fields with their values and labels.
-                 * @param array $field_params
-                 * @param bool $array
-                 * @return string|array
-                 */
+
+
+        /**
+         * Parces array of field parameters and their options and reterns a string or an array
+         * of complete input fields with their values and labels.
+         * @param array $field_params
+         * @param bool $array
+         * @return string|array
+         */
 		function inputfield($field_params, $array = false) {
 			$options = $this->options;
-
+            $attributes = false;
+            $name_suffix = false;
 			//explode array into additioanal input fields parameters
 			if(isset($field_params['attr']) && !empty($field_params['attr'])){
-				foreach($field_params['attr'] as $k => $v){
+                foreach($field_params['attr'] as $k => $v){
                                     if($k != 'checked'){
 					$attributes .= $k . '="' . $v . '" ';
                                         //for selection list
@@ -359,9 +369,8 @@ if(!class_exists('Plugin_Admin_Class')){
                                     }
 				}
 			}
-			if($field_params['desc']){
-				$desc = "<small class='description'>{$field_params['desc']}</small>\n";
-			}
+
+			$desc =  isset($field_params['desc']) ? "<small class='description'>{$field_params['desc']}</small>\n" : '';
 
                         switch($field_params['type']){
                             case 'html':
@@ -395,6 +404,7 @@ if(!class_exists('Plugin_Admin_Class')){
                                 );
                                 break;
                             case 'select':
+                                $keys = false;
                                 if(!empty($field_params['options'])){
                                     if($name_suffix){
                                         if($this->_val($field_params)){
@@ -405,13 +415,14 @@ if(!class_exists('Plugin_Admin_Class')){
                                     }else{
                                         if($this->_val($field_params)){
                                             $keys = $this->_val($field_params);
-                                        }else{
+                                        }elseif( isset($field_params['default']) ){
                                             $keys = $field_params['default'];
                                         }
                                     }
 
+                                    $select_options = '';
                                     foreach($field_params['options'] as $key => $value){
-                                        $selected = '';                                        
+                                        $selected = '';
                                         if(is_array($keys)){
                                             if(in_array($key, $keys)){
                                                 $selected = ' selected="selected"';
@@ -420,7 +431,7 @@ if(!class_exists('Plugin_Admin_Class')){
                                             $selected = ' selected="selected"';
                                         }
 
-                                        $select_options .= '<option value="' . $key . '" ' . $selected . '>' . $value . '</option>' . "\n";                                        
+                                        $select_options .= '<option value="' . $key . '" ' . $selected . '>' . $value . '</option>' . "\n";
                                     }
                                 }
                                 $output = array(
@@ -440,7 +451,7 @@ if(!class_exists('Plugin_Admin_Class')){
                             return implode('', $output);
                         }
 
-		}		
+		}
 
 		/**
 		 * Create a form table from an array of rows
@@ -462,12 +473,12 @@ if(!class_exists('Plugin_Admin_Class')){
 			$content .= '</table>' . "\n";
 			return $content;
 		}
-		
+
 		/*
 		* Automatically generate a table from an array of rows
                 * Each value of the @row is a cell
 		*/
-		function auto_table($rows) {                    
+		function auto_table($rows) {
 			$content = '<table class="form-table">' . "\n";
 			foreach ($rows as $row) {
                             //Begin row
@@ -498,13 +509,14 @@ if(!class_exists('Plugin_Admin_Class')){
                  * being used in auto_table
 		 */
                 function auto_form($option_fields, $array = true){
+                    $output = false;
                     if(is_array($option_fields) && !empty($option_fields)){
                         foreach($option_fields as $field_params){
                             if($array){
                                 $output[] = $this->inputfield($field_params, $array);
                             }else{
                                 $output .= $this->inputfield($field_params, $array);
-                            }                            
+                            }
                         }
                     }
                     return $output;
@@ -543,7 +555,7 @@ if(!class_exists('Plugin_Admin_Class')){
                  * @param string $width
                  */
                 function add_column($id = 0, $width = '100%'){
-                    if(!$this->columns[$id]){
+                    if( !isset($this->columns[$id]) ){
                         $this->columns[$id]['boxes'] = array();
                         $this->columns[$id]['width'] = $width;
                     }
@@ -562,17 +574,17 @@ if(!class_exists('Plugin_Admin_Class')){
                  *
                  * @param string $title
                  * @param mixed $content
-                 * @param <type> $column_id 
+                 * @param <type> $column_id
                  */
                 function add_box($title, $content, $column_id = 0 ){
 
                     //check if the $content is an array, if so we have to convert the array into fields.
-                    if(is_array($content)){                        
+                    if(is_array($content)){
                         $box = array($title, $this->fields($content));
                     }else{
                         $box = array($title, $content);
                     }
-                    $this->columns[$column_id]['boxes'][] = $box;                    
+                    $this->columns[$column_id]['boxes'][] = $box;
                 }
 
                 /**
@@ -607,15 +619,15 @@ if(!class_exists('Plugin_Admin_Class')){
                         <h2 class="submit"><?php echo $this->longname; ?>&nbsp;&nbsp;&nbsp;<input class="button-primary" type="submit" name="submit" value="Save Options" /></h2>
                         <?php
                             settings_fields($this->optionname . '-option-group');
-                            
+
                             if(!is_array($content)){
                                 echo $this->postbox_container($this->postbox($title, $content), '70%');
-                            }else{                                
+                            }else{
                                 foreach($content as $column){
                                     $output = '';
                                     if(!is_array($column[1])){
                                         $output = $this->postbox($column[0], $column[1]);
-                                    }else{                                        
+                                    }else{
                                         foreach($column[1] as $row){
                                             print '<pre>';
                                             //print_r($row[0]);
@@ -626,7 +638,7 @@ if(!class_exists('Plugin_Admin_Class')){
                                     echo $this->postbox_container($output, $column[2]);
                                 }
                             }
-                            
+
                             echo $this->postbox_container($this->credits_column(), '25%');
                         ?>
                         <br clear="all" />
@@ -637,7 +649,7 @@ if(!class_exists('Plugin_Admin_Class')){
                 }
 
                 function _config_page_template(){
-                
+
                 ?>
                 <div id="plugin_admin_class" class="wrap">
                     <?php if(!$this->tabs): ?>
@@ -650,10 +662,11 @@ if(!class_exists('Plugin_Admin_Class')){
                         endif;
                         //print_r($this->tabs);
                         //Check if tabs were created
-                        if(is_array($this->tabs) && count($this->tabs)>0){                                                       
-                            
+                        if(is_array($this->tabs) && count($this->tabs)>0){
+
                             $tab_names = array_keys($this->tabs);
                             $i=1;
+                            $tabs = false;
                             foreach($tab_names as $tab){
                                 $tabs .= '<li><a href="#tab-' . $i . '"><span>'. $tab . '</span></a></li>';
                                 $i++;
@@ -662,7 +675,7 @@ if(!class_exists('Plugin_Admin_Class')){
                             echo '<ul>';
                             echo $tabs;
                             echo '</ul>';
-                            $i=1;                            
+                            $i=1;
                             foreach($this->tabs as $columns){
                                 echo '<div id="tab-' . $i . '">';
                                 //each tab should have it's own form. Settings will merge with the existing ones on submission. See validation function.
@@ -678,11 +691,11 @@ if(!class_exists('Plugin_Admin_Class')){
                                 echo '</form>';
                                 echo '</div>';
                                 $i++;
-                            }                           
-                            echo '</div>';                            
-                        }else{                            
+                            }
+                            echo '</div>';
+                        }else{
                             echo $this->_template_content($this->columns);
-                        }                        
+                        }
                         ?>
                         <br clear="all" />
                         <?php if(!$this->tabs): ?>
@@ -698,6 +711,7 @@ if(!class_exists('Plugin_Admin_Class')){
                         return;
 
                     //print_r($columns);
+                    $html = false;
                     foreach($columns as $name => $column){
                         $output = '';
                         foreach($column['boxes'] as $box){
@@ -706,7 +720,7 @@ if(!class_exists('Plugin_Admin_Class')){
                         $html .= $this->postbox_container($output, $columns[$name]['width']);
                     }
 
-                    $html .= $this->postbox_container($this->credits_column(), '25%');
+                    $html .= $this->postbox_container($this->credits_column(), '28%');
                     return $html;
                 }
 
@@ -735,13 +749,13 @@ if(!class_exists('Plugin_Admin_Class')){
 
                 function postbox_container($content, $width = '70%'){
                     $output = '
-                    <div class="postbox-container" style="width:' . $width . ';">
+                    <div class="postbox-container" style="width:' . $width . '; margin-right: 1%;">
                         <div class="metabox-holder">
                             <div class="meta-box-sortables">'
                               .$content
                             . '</div>
                         </div>
-                    </div>';                    
+                    </div>';
                     return $output;
                 }
 
@@ -765,8 +779,8 @@ if(!class_exists('Plugin_Admin_Class')){
                                         <li>Give it a good rating on <a href="' . $this->credits['download_url'] . '">WordPress.org</a></li>
                                     </ul>';
 			return $this->postbox('Like this plugin?', $content, $this->hook.'like');
-		}	
-		
+		}
+
 		/**
 		 * Info box with link to the support forums.
 		 */
@@ -796,7 +810,6 @@ if(!class_exists('Plugin_Admin_Class')){
                     return $this->postbox('Donate', $content, $this->hook.'donate');
                 }
 
-		
+
 	}
 }
-?>
